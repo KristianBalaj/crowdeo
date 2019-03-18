@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.3.0">
+  <zoom_level>6</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>804</x>
+      <y>618</y>
+      <w>126</w>
+      <h>114</h>
+    </coordinates>
+    <panel_attributes>*Users*
+--
++ &lt;&lt;PK&gt;&gt; id: serial
++ nick_name: text
++ birth_date: date
++ email: text
++ photo: image
++ is_calendar_sync: boolean
+
++ &lt;&lt;FK&gt;&gt; gender_id: int</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>426</x>
+      <y>636</y>
+      <w>126</w>
+      <h>66</h>
+    </coordinates>
+    <panel_attributes>*Interests*
+--
++ &lt;&lt;PK&gt;&gt; id: serial
++ interest_tag: text</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>612</x>
+      <y>636</y>
+      <w>126</w>
+      <h>66</h>
+    </coordinates>
+    <panel_attributes>*UsersInterests*
+--
++ &lt;&lt;PK&gt;&gt; id: serial
+
++ &lt;&lt;FK&gt;&gt; user_id: int
++ &lt;&lt;FK&gt;&gt; interest_id: int
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>732</x>
+      <y>666</y>
+      <w>84</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1= 1
+m2= n</panel_attributes>
+    <additional_attributes>120.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>546</x>
+      <y>666</y>
+      <w>78</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1= n
+m2= 1</panel_attributes>
+    <additional_attributes>110.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>684</x>
+      <y>186</y>
+      <w>126</w>
+      <h>180</h>
+    </coordinates>
+    <panel_attributes>*Events*
+--
++ &lt;&lt;PK&gt;&gt; id: serial
++ name: text
++ description: text
++ start_date: date
++ end_date: date
++ capacity: integer
+--
+*Event filter:*
++ is_no_filter: boolean
++ from_birth_date: date
+--
+
++ &lt;&lt;FK&gt;&gt; location_id: int
++ &lt;&lt;FK&gt;&gt; event_filter_id: int
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>804</x>
+      <y>798</y>
+      <w>126</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>*Genders*
+--
++ &lt;&lt;PK&gt;&gt; id: serial
++ gender_tag: text</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>864</x>
+      <y>726</y>
+      <w>24</w>
+      <h>84</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1= 1
+m2= n</panel_attributes>
+    <additional_attributes>10.0;120.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>684</x>
+      <y>54</y>
+      <w>126</w>
+      <h>78</h>
+    </coordinates>
+    <panel_attributes>*Locations*
+--
++ &lt;&lt;PK&gt;&gt; id: serial
++ location_name: text
++ longitude: real
++ latitude: real</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>738</x>
+      <y>126</y>
+      <w>24</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=1
+m2=n</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;100.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>282</x>
+      <y>228</y>
+      <w>126</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>*EventFiltersGenders*
+--
++ &lt;&lt;PK&gt;&gt; id: serial
+
++ &lt;&lt;FK&gt;&gt; event_id: int
++ &lt;&lt;FK&gt;&gt; gender_id: int
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>402</x>
+      <y>252</y>
+      <w>294</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=1
+m2=n</panel_attributes>
+    <additional_attributes>470.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>360</x>
+      <y>294</y>
+      <w>456</w>
+      <h>552</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1= 1
+m2= n</panel_attributes>
+    <additional_attributes>740.0;890.0;10.0;890.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>798</x>
+      <y>444</y>
+      <w>126</w>
+      <h>84</h>
+    </coordinates>
+    <panel_attributes>*UsersEvents*
+--
++ &lt;&lt;PK&gt;&gt; id: serial
+
++ &lt;&lt;FK&gt;&gt; user_id: int
++ &lt;&lt;FK&gt;&gt; event_id: int
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>798</x>
+      <y>360</y>
+      <w>24</w>
+      <h>96</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=1
+m2=n</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;140.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>858</x>
+      <y>522</y>
+      <w>24</w>
+      <h>108</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=n
+m2=1</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;160.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>654</x>
+      <y>444</y>
+      <w>126</w>
+      <h>84</h>
+    </coordinates>
+    <panel_attributes>*EventFiltersEvents*
+(filter people by visited event)
+--
++ &lt;&lt;PK&gt;&gt; id: serial
+
++ &lt;&lt;FK&gt;&gt; event_filter_id: int
++ &lt;&lt;FK&gt;&gt; visited_event_id: int
+
+
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>690</x>
+      <y>360</y>
+      <w>24</w>
+      <h>96</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=2
+m2=n</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;140.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>462</x>
+      <y>318</y>
+      <w>126</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>*EventFiltersInterests*
+--
++ &lt;&lt;PK&gt;&gt; id: serial
+
++ &lt;&lt;FK&gt;&gt; event_id: int
++ &lt;&lt;FK&gt;&gt; interest_id: int</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>582</x>
+      <y>342</y>
+      <w>114</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=1
+m2=n</panel_attributes>
+    <additional_attributes>170.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>492</x>
+      <y>384</y>
+      <w>24</w>
+      <h>264</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=1
+m2=n</panel_attributes>
+    <additional_attributes>10.0;420.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>960</x>
+      <y>264</y>
+      <w>126</w>
+      <h>102</h>
+    </coordinates>
+    <panel_attributes>*UserFeedback*
+--
++ &lt;&lt;PK&gt;&gt; id: serial
++ event_quality: integer
++ organizer_quality: integer
++ is_pending: boolean
+
++ &lt;&lt;FK&gt;&gt; user_id: int
++ &lt;&lt;FK&gt;&gt; event_id: int
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>804</x>
+      <y>312</y>
+      <w>168</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=1
+m2=n</panel_attributes>
+    <additional_attributes>10.0;10.0;260.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>924</x>
+      <y>360</y>
+      <w>114</w>
+      <h>330</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=1
+m2=n</panel_attributes>
+    <additional_attributes>10.0;520.0;160.0;520.0;160.0;10.0</additional_attributes>
+  </element>
+</diagram>
