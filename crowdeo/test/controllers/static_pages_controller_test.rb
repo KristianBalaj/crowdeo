@@ -8,10 +8,15 @@ class StaticPagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should get home" do
-    get static_pages_home_url
+    get home_path
     assert_response :success
     assert_select "title", "Crowdeo - Home"
-    assert_select 'a[href]', 4
+  end
+
+  test "should get about" do
+    get about_path
+    assert_response :success
+    assert_select "title", "Crowdeo - About"
   end
 
 end
