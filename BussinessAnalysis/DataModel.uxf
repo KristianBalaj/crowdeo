@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <diagram program="umlet" version="14.3.0">
-  <zoom_level>6</zoom_level>
+  <zoom_level>11</zoom_level>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>804</x>
-      <y>618</y>
-      <w>126</w>
-      <h>114</h>
+      <x>957</x>
+      <y>1034</y>
+      <w>231</w>
+      <h>209</h>
     </coordinates>
     <panel_attributes>*Users*
 --
@@ -24,10 +24,10 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>426</x>
-      <y>636</y>
-      <w>126</w>
-      <h>66</h>
+      <x>264</x>
+      <y>1067</y>
+      <w>231</w>
+      <h>121</h>
     </coordinates>
     <panel_attributes>*Interests*
 --
@@ -38,10 +38,10 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>612</x>
-      <y>636</y>
-      <w>126</w>
-      <h>66</h>
+      <x>605</x>
+      <y>1067</y>
+      <w>231</w>
+      <h>121</h>
     </coordinates>
     <panel_attributes>*UsersInterests*
 --
@@ -55,10 +55,10 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>732</x>
-      <y>666</y>
-      <w>84</w>
-      <h>24</h>
+      <x>825</x>
+      <y>1122</y>
+      <w>154</w>
+      <h>44</h>
     </coordinates>
     <panel_attributes>lt=-
 m1= 1
@@ -68,10 +68,10 @@ m2= n</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>546</x>
-      <y>666</y>
-      <w>78</w>
-      <h>24</h>
+      <x>484</x>
+      <y>1122</y>
+      <w>143</w>
+      <h>44</h>
     </coordinates>
     <panel_attributes>lt=-
 m1= n
@@ -81,10 +81,10 @@ m2= 1</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>684</x>
-      <y>186</y>
-      <w>126</w>
-      <h>180</h>
+      <x>737</x>
+      <y>242</y>
+      <w>231</w>
+      <h>330</h>
     </coordinates>
     <panel_attributes>*Events*
 --
@@ -109,10 +109,10 @@ m2= 1</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>804</x>
-      <y>798</y>
-      <w>126</w>
-      <h>60</h>
+      <x>957</x>
+      <y>1364</y>
+      <w>231</w>
+      <h>110</h>
     </coordinates>
     <panel_attributes>*Genders*
 --
@@ -123,10 +123,10 @@ m2= 1</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>864</x>
-      <y>726</y>
-      <w>24</w>
-      <h>84</h>
+      <x>1067</x>
+      <y>1232</y>
+      <w>44</w>
+      <h>154</h>
     </coordinates>
     <panel_attributes>lt=-
 m1= 1
@@ -136,10 +136,10 @@ m2= n</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>684</x>
-      <y>54</y>
-      <w>126</w>
-      <h>78</h>
+      <x>737</x>
+      <y>0</y>
+      <w>231</w>
+      <h>143</h>
     </coordinates>
     <panel_attributes>*Locations*
 --
@@ -152,10 +152,10 @@ m2= n</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>738</x>
-      <y>126</y>
-      <w>24</w>
-      <h>72</h>
+      <x>836</x>
+      <y>132</y>
+      <w>44</w>
+      <h>132</h>
     </coordinates>
     <panel_attributes>lt=-
 m1=1
@@ -165,10 +165,10 @@ m2=n</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>282</x>
-      <y>228</y>
-      <w>126</w>
-      <h>72</h>
+      <x>0</x>
+      <y>319</y>
+      <w>231</w>
+      <h>132</h>
     </coordinates>
     <panel_attributes>*EventFiltersGenders*
 --
@@ -182,10 +182,10 @@ m2=n</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>402</x>
-      <y>252</y>
-      <w>294</w>
-      <h>24</h>
+      <x>220</x>
+      <y>363</y>
+      <w>539</w>
+      <h>44</h>
     </coordinates>
     <panel_attributes>lt=-
 m1=1
@@ -195,10 +195,10 @@ m2=n</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>360</x>
-      <y>294</y>
-      <w>456</w>
-      <h>552</h>
+      <x>143</x>
+      <y>440</y>
+      <w>836</w>
+      <h>1012</h>
     </coordinates>
     <panel_attributes>lt=-
 m1= 1
@@ -208,10 +208,10 @@ m2= n</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>798</x>
-      <y>444</y>
-      <w>126</w>
-      <h>84</h>
+      <x>946</x>
+      <y>715</y>
+      <w>231</w>
+      <h>154</h>
     </coordinates>
     <panel_attributes>*UsersEvents*
 --
@@ -226,10 +226,10 @@ m2= n</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>798</x>
-      <y>360</y>
-      <w>24</w>
-      <h>96</h>
+      <x>946</x>
+      <y>561</y>
+      <w>44</w>
+      <h>176</h>
     </coordinates>
     <panel_attributes>lt=-
 m1=1
@@ -239,10 +239,10 @@ m2=n</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>858</x>
-      <y>522</y>
-      <w>24</w>
-      <h>108</h>
+      <x>1056</x>
+      <y>858</y>
+      <w>44</w>
+      <h>198</h>
     </coordinates>
     <panel_attributes>lt=-
 m1=n
@@ -252,10 +252,10 @@ m2=1</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>654</x>
-      <y>444</y>
-      <w>126</w>
-      <h>84</h>
+      <x>682</x>
+      <y>715</y>
+      <w>231</w>
+      <h>154</h>
     </coordinates>
     <panel_attributes>*EventFiltersEvents*
 (filter people by visited event)
@@ -273,10 +273,10 @@ m2=1</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>690</x>
-      <y>360</y>
-      <w>24</w>
-      <h>96</h>
+      <x>748</x>
+      <y>561</y>
+      <w>44</w>
+      <h>176</h>
     </coordinates>
     <panel_attributes>lt=-
 m1=2
@@ -286,10 +286,10 @@ m2=n</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>462</x>
-      <y>318</y>
-      <w>126</w>
-      <h>72</h>
+      <x>330</x>
+      <y>484</y>
+      <w>231</w>
+      <h>132</h>
     </coordinates>
     <panel_attributes>*EventFiltersInterests*
 --
@@ -302,10 +302,10 @@ m2=n</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>582</x>
-      <y>342</y>
-      <w>114</w>
-      <h>24</h>
+      <x>550</x>
+      <y>528</y>
+      <w>209</w>
+      <h>44</h>
     </coordinates>
     <panel_attributes>lt=-
 m1=1
@@ -315,10 +315,10 @@ m2=n</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>492</x>
-      <y>384</y>
-      <w>24</w>
-      <h>264</h>
+      <x>385</x>
+      <y>605</y>
+      <w>44</w>
+      <h>484</h>
     </coordinates>
     <panel_attributes>lt=-
 m1=1
@@ -328,10 +328,10 @@ m2=n</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>960</x>
-      <y>264</y>
-      <w>126</w>
-      <h>102</h>
+      <x>1243</x>
+      <y>385</y>
+      <w>231</w>
+      <h>187</h>
     </coordinates>
     <panel_attributes>*UserFeedback*
 --
@@ -349,10 +349,10 @@ m2=n</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>804</x>
-      <y>312</y>
-      <w>168</w>
-      <h>24</h>
+      <x>957</x>
+      <y>473</y>
+      <w>308</w>
+      <h>44</h>
     </coordinates>
     <panel_attributes>lt=-
 m1=1
@@ -362,10 +362,10 @@ m2=n</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>924</x>
-      <y>360</y>
-      <w>114</w>
-      <h>330</h>
+      <x>1177</x>
+      <y>561</y>
+      <w>209</w>
+      <h>605</h>
     </coordinates>
     <panel_attributes>lt=-
 m1=1
