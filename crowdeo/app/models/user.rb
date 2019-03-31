@@ -4,6 +4,7 @@ class User < ApplicationRecord
             presence: true,
             length: { maximum: 25 },
             uniqueness: true
+  validate :check_nick_name_empty_spaces
   validates :email,
             presence: true,
             length: { maximum: 255 },
@@ -13,4 +14,10 @@ class User < ApplicationRecord
             presence: true,
             length: { minimum: 6 }
   has_secure_password
+
+  def check_nick_name_empty_spaces
+    if self.nick_name.match(/\s+/)
+      errors.add(:nick_name, "can't contain white spaces")
+    end
+  end
 end

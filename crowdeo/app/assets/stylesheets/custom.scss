@@ -1,7 +1,16 @@
 @import "bootstrap-sprockets";
 @import "bootstrap";
 
-$my_orange: #f77754;
+$palette_orange: #f77754;
+$palette_light_blue: #018790;
+$palette_dark_blue: #0A5160;
+$palette_black: #2B2726;
+
+@mixin box_sizing {
+  -moz-box-sizing:    border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing:         border-box;
+}
 
 body {
   padding-top: 60px;
@@ -15,16 +24,33 @@ body {
   }
 }
 
+.btn-primary {
+  background-color: $palette_orange;
+  border-color: $palette_orange;
+  &:hover {
+    background-color: $palette_orange;
+    border-color: $palette_orange;
+  }
+  &:active {
+    background-color: $palette_dark_blue;
+    border-color: $palette_dark_blue;
+  }
+}
+
 #logo {
   float: left;
-  color: $my_orange;
+  color: $palette_orange;
   margin-right: 10px;
   font-size: 1.7em;
   letter-spacing: -1px;
   padding-top: 9px;
   font-weight: bold;
   &:hover {
-    color: $my_orange;
+    color: $palette_orange;
+    text-decoration: none;
+  }
+  &:active {
+    color: $palette_orange;
     text-decoration: none;
   }
 }
@@ -50,6 +76,46 @@ footer {
       float: left;
       margin-left: 15px;
     }
+  }
+}
+
+input, textarea, select, .uneditable-input {
+  border: 1px solid #bbb;
+  width: 100%;
+  margin-bottom: 15px;
+  @include box_sizing;
+}
+
+input {
+  height: auto !important;
+  &[type="checkbox"] {
+    width: auto;
+    margin-bottom: 20px;
+    margin-top: 5px;
+    margin-left: 10px;
+  }
+}
+
+.debug_dump {
+  clear: both;
+  float: left;
+  width: 100%;
+  margin-top: 45px;
+  @include box_sizing;
+}
+
+#error_explanation {
+  color: red;
+  ul {
+    color: red;
+    margin-bottom: 30px;
+  }
+}
+
+.field_with_errors {
+  @extend .has-error;
+  .form-control {
+    color: $state-danger-text;
   }
 }
 

@@ -19,6 +19,13 @@ class UserTest < ActiveSupport::TestCase
     assert_not @user.valid?
   end
 
+  test "nick name should not contain whitespace" do
+    @user.nick_name = "hello me"
+    assert_not @user.valid?
+    @user.nick_name = "hello  me"
+    assert_not @user.valid?
+  end
+
   test "email should be present" do
     @user.email = "    "
     assert_not @user.valid?
