@@ -1,0 +1,15 @@
+<div class="jumbotron">
+  <div class="container">
+    <h1><%= @event.name %></h1>
+    <p><small>Organizer</small></p>
+    <p><%= @event.description %></p>
+    <p>
+      <% if @attending %>
+        <%= link_to "Unattend", event_unattend_path(@event.id), method: :put, class: "btn btn-primary btn-lg" %>
+      <% else %>
+        <%= link_to "Attend", event_attend_path(@event.id), method: :put, class: "btn btn-primary btn-lg" %>
+      <% end %>
+    </p>
+  </div>
+</div>
+<!--<p>Event name: <%#= @event.name %></p>-->

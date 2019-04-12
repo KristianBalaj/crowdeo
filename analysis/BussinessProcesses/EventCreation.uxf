@@ -4,8 +4,8 @@
   <element>
     <id>UMLSpecialState</id>
     <coordinates>
-      <x>280</x>
-      <y>63</y>
+      <x>210</x>
+      <y>70</y>
       <w>14</w>
       <h>14</h>
     </coordinates>
@@ -15,8 +15,8 @@
   <element>
     <id>Text</id>
     <coordinates>
-      <x>224</x>
-      <y>42</y>
+      <x>154</x>
+      <y>49</y>
       <w>147</w>
       <h>21</h>
     </coordinates>
@@ -27,8 +27,8 @@ style=wordwrap</panel_attributes>
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>252</x>
-      <y>98</y>
+      <x>182</x>
+      <y>105</y>
       <w>70</w>
       <h>28</h>
     </coordinates>
@@ -39,8 +39,8 @@ Setup event name</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>280</x>
-      <y>70</y>
+      <x>210</x>
+      <y>77</y>
       <w>21</w>
       <h>42</h>
     </coordinates>
@@ -50,8 +50,8 @@ Setup event name</panel_attributes>
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>252</x>
-      <y>196</y>
+      <x>182</x>
+      <y>203</y>
       <w>77</w>
       <h>35</h>
     </coordinates>
@@ -62,8 +62,8 @@ Setup start &amp; end date</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>280</x>
-      <y>119</y>
+      <x>210</x>
+      <y>126</y>
       <w>21</w>
       <h>35</h>
     </coordinates>
@@ -73,8 +73,8 @@ Setup start &amp; end date</panel_attributes>
   <element>
     <id>UMLSpecialState</id>
     <coordinates>
-      <x>273</x>
-      <y>385</y>
+      <x>203</x>
+      <y>392</y>
       <w>28</w>
       <h>28</h>
     </coordinates>
@@ -84,8 +84,8 @@ Setup start &amp; end date</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>280</x>
-      <y>224</y>
+      <x>210</x>
+      <y>231</y>
       <w>21</w>
       <h>35</h>
     </coordinates>
@@ -95,8 +95,8 @@ Setup start &amp; end date</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>294</x>
-      <y>392</y>
+      <x>224</x>
+      <y>399</y>
       <w>231</w>
       <h>70</h>
     </coordinates>
@@ -107,8 +107,8 @@ Setup start &amp; end date</panel_attributes>
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>371</x>
-      <y>448</y>
+      <x>301</x>
+      <y>455</y>
       <w>84</w>
       <h>28</h>
     </coordinates>
@@ -118,8 +118,8 @@ Setup start &amp; end date</panel_attributes>
   <element>
     <id>UMLNote</id>
     <coordinates>
-      <x>455</x>
-      <y>469</y>
+      <x>385</x>
+      <y>476</y>
       <w>98</w>
       <h>56</h>
     </coordinates>
@@ -132,8 +132,8 @@ Visited events</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>182</x>
-      <y>392</y>
+      <x>112</x>
+      <y>399</y>
       <w>154</w>
       <h>301</h>
     </coordinates>
@@ -144,8 +144,8 @@ Visited events</panel_attributes>
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>252</x>
-      <y>245</y>
+      <x>182</x>
+      <y>252</y>
       <w>70</w>
       <h>28</h>
     </coordinates>
@@ -155,8 +155,8 @@ Visited events</panel_attributes>
   <element>
     <id>UMLSpecialState</id>
     <coordinates>
-      <x>273</x>
-      <y>665</y>
+      <x>203</x>
+      <y>672</y>
       <w>28</w>
       <h>28</h>
     </coordinates>
@@ -166,8 +166,8 @@ Visited events</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>399</x>
-      <y>469</y>
+      <x>329</x>
+      <y>476</y>
       <w>21</w>
       <h>42</h>
     </coordinates>
@@ -177,8 +177,8 @@ Visited events</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>280</x>
-      <y>266</y>
+      <x>210</x>
+      <y>273</y>
       <w>21</w>
       <h>42</h>
     </coordinates>
@@ -188,8 +188,8 @@ Visited events</panel_attributes>
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>371</x>
-      <y>497</y>
+      <x>301</x>
+      <y>504</y>
       <w>77</w>
       <h>49</h>
     </coordinates>
@@ -201,8 +201,8 @@ Display user impact
   <element>
     <id>UMLSpecialState</id>
     <coordinates>
-      <x>392</x>
-      <y>560</y>
+      <x>322</x>
+      <y>567</y>
       <w>28</w>
       <h>28</h>
     </coordinates>
@@ -212,8 +212,8 @@ Display user impact
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>399</x>
-      <y>539</y>
+      <x>329</x>
+      <y>546</y>
       <w>21</w>
       <h>35</h>
     </coordinates>
@@ -223,8 +223,8 @@ Display user impact
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>413</x>
-      <y>448</y>
+      <x>343</x>
+      <y>455</y>
       <w>280</w>
       <h>140</h>
     </coordinates>
@@ -235,8 +235,8 @@ Want to update filters</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>399</x>
-      <y>581</y>
+      <x>329</x>
+      <y>588</y>
       <w>133</w>
       <h>56</h>
     </coordinates>
@@ -247,8 +247,8 @@ Don't want to update filters</panel_attributes>
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>371</x>
-      <y>623</y>
+      <x>301</x>
+      <y>630</y>
       <w>70</w>
       <h>28</h>
     </coordinates>
@@ -258,8 +258,8 @@ Don't want to update filters</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>294</x>
-      <y>644</y>
+      <x>224</x>
+      <y>651</y>
       <w>126</w>
       <h>49</h>
     </coordinates>
@@ -269,8 +269,8 @@ Don't want to update filters</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>280</x>
-      <y>686</y>
+      <x>210</x>
+      <y>693</y>
       <w>21</w>
       <h>56</h>
     </coordinates>
@@ -280,8 +280,8 @@ Don't want to update filters</panel_attributes>
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>245</x>
-      <y>294</y>
+      <x>175</x>
+      <y>301</y>
       <w>84</w>
       <h>28</h>
     </coordinates>
@@ -291,8 +291,8 @@ Don't want to update filters</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>280</x>
-      <y>315</y>
+      <x>210</x>
+      <y>322</y>
       <w>21</w>
       <h>42</h>
     </coordinates>
@@ -302,8 +302,8 @@ Don't want to update filters</panel_attributes>
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>245</x>
-      <y>140</y>
+      <x>175</x>
+      <y>147</y>
       <w>84</w>
       <h>42</h>
     </coordinates>
@@ -314,8 +314,8 @@ Setup event description</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>280</x>
-      <y>175</y>
+      <x>210</x>
+      <y>182</y>
       <w>21</w>
       <h>35</h>
     </coordinates>
@@ -325,8 +325,8 @@ Setup event description</panel_attributes>
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>252</x>
-      <y>728</y>
+      <x>182</x>
+      <y>735</y>
       <w>70</w>
       <h>28</h>
     </coordinates>
@@ -336,8 +336,8 @@ Setup event description</panel_attributes>
   <element>
     <id>UMLSpecialState</id>
     <coordinates>
-      <x>280</x>
-      <y>784</y>
+      <x>210</x>
+      <y>791</y>
       <w>14</w>
       <h>14</h>
     </coordinates>
@@ -347,8 +347,8 @@ Setup event description</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>280</x>
-      <y>749</y>
+      <x>210</x>
+      <y>756</y>
       <w>21</w>
       <h>49</h>
     </coordinates>
@@ -358,8 +358,8 @@ Setup event description</panel_attributes>
   <element>
     <id>Text</id>
     <coordinates>
-      <x>252</x>
-      <y>798</y>
+      <x>182</x>
+      <y>805</y>
       <w>126</w>
       <h>21</h>
     </coordinates>
@@ -370,8 +370,8 @@ style=wordwrap</panel_attributes>
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>238</x>
-      <y>343</y>
+      <x>168</x>
+      <y>350</y>
       <w>105</w>
       <h>28</h>
     </coordinates>
@@ -382,8 +382,8 @@ Name the picked location</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>280</x>
-      <y>364</y>
+      <x>210</x>
+      <y>371</y>
       <w>21</w>
       <h>35</h>
     </coordinates>

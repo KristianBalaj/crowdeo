@@ -1,0 +1,33 @@
+<div class="album py=5 bg-light">
+
+  <div class="row">
+    <% @events_hash_arr.each do |event_hash| %>
+
+      <div class="col-md-4">
+        <div class="card mb-4 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title"><%= event_hash[:event].name %></h5>
+            <h6 class="card-subtitle mb-2 text-muted">Organizer: <%= event_hash[:author].nick_name %></h6>
+            <h6 class="card-subtitle mb-2 text-muted">Total attendants: <%= event_hash[:attendants_count] %></h6>
+            <p class="card-text"><%= event_hash[:event].description %></p>
+          </div>
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="btn-group">
+              <%= link_to "View", event_hash[:event], class: "btn btn-sm btn-outline-secondary" %>
+
+              <% if event_hash[:editable?] %>
+                <%= link_to "Edit", edit_event_path(event_hash[:event]), class: "btn btn-sm btn-outline-secondary" %>
+              <% end %>
+
+            </div>
+          </div>
+          <div class="card-footer text-muted">
+            <small class="text-muted">Created <%= time_ago_in_words event_hash[:event].created_at %> ago</small>
+          </div>
+        </div>
+      </div>
+
+    <% end %>
+  </div>
+
+</div>

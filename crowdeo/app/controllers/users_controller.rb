@@ -13,7 +13,7 @@ class UsersController < ApplicationController
     if @user.save
       log_in @user
       flash[:success] = "Account created successfully."
-      redirect_to @user
+      redirect_to events_path
     else
       render 'new'
     end
@@ -21,14 +21,14 @@ class UsersController < ApplicationController
 
   private
 
-    def user_params
-      params.require(:user).permit(
-          :nick_name,
-          :birth_date,
-          :email,
-          :password,
-          :password_confirmation,
-          :calendar_sync?)
-    end
+  def user_params
+    params.require(:user).permit(
+        :nick_name,
+        :birth_date,
+        :email,
+        :password,
+        :password_confirmation,
+        :calendar_sync?)
+  end
 
 end

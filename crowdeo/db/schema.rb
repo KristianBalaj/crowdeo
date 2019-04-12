@@ -10,10 +10,34 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_29_154224) do
+ActiveRecord::Schema.define(version: 2019_04_12_205526) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "event_attendances", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "event_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "events", force: :cascade do |t|
+    t.string "name"
+    t.string "description"
+    t.date "start_date"
+    t.date "end_date"
+    t.integer "capacity"
+    t.boolean "is_filter?"
+    t.date "from_birth_date"
+    t.string "location_name"
+    t.string "location_description"
+    t.float "longitude"
+    t.float "latitude"
+    t.integer "author_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "nick_name"
@@ -23,8 +47,9 @@ ActiveRecord::Schema.define(version: 2019_03_29_154224) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "password_digest"
-    t.index ["email"], name: "index_users_on_email", unique: true
-    t.index ["nick_name"], name: "index_users_on_nick_name", unique: true
   end
 
+  add_foreign_key "event_attendances", "events"
+  add_foreign_key "event_attendances", "users"
+  add_foreign_key "events", "users", column: "author_id"
 end

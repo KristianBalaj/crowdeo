@@ -15,6 +15,8 @@ class User < ApplicationRecord
             length: { minimum: 6 }
   has_secure_password
 
+  private
+
   # when there is a whitespace in the nick name, an error is added
   def check_nick_name_empty_spaces
     if self.nick_name.match(/\s+/)
