@@ -6,9 +6,16 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
+puts "Starting seed..."
+
 EventAttendance.destroy_all
 Event.destroy_all
 User.destroy_all
+
+puts "All tables destroyed..."
+puts "Creating users..."
+
+start_time = Time.now
 
 users_hash_arr = []
 
@@ -18,10 +25,23 @@ end
 
 User.create(users_hash_arr)
 
-Event.create({
-               name: "Event 1",
-               description: "description of the event 1.",
-               start_date: "2017-03-06",
-               end_date: "2017-03-07",
-               author_id: User.first.id
-             })
+puts "Users created, time elapsed: #{Time.now - start_time} seconds"
+puts "Creating events..."
+
+start_time = Time.now
+
+events_hash_arr = []
+all_users_arr = User.all.to_a
+
+for i in 0..10000
+  events_hash_arr.push({
+                           name: "Event#{i}",
+                           description: "description of event #{i}.",
+                           start_date: "2017-03-06",
+                           end_date: "2017-03-07",
+                           author_id: all_users_arr[rand(0..(all_users_arr.length - 1))].id })
+end
+
+Event.create(events_hash_arr)
+
+puts "Events created, time elapsed: #{Time.now - start_time} seconds"

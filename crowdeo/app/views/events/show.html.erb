@@ -1,7 +1,7 @@
 <div class="jumbotron">
   <div class="container">
     <h1><%= @event.name %></h1>
-    <p><small>Organizer</small></p>
+    <p><small>Organizer: <%= @author_nick %></small></p>
     <p><%= @event.description %></p>
     <p>
       <% if @attending %>
@@ -11,5 +11,8 @@
       <% end %>
     </p>
   </div>
+
+  <%= link_to "Back", all_events_path, class: "btn btn-primary btn-lg" %>
+
 </div>
 <!--<p>Event name: <%#= @event.name %></p>-->
