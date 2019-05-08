@@ -1,24 +1,35 @@
-<header class="navbar navbar-fixed-top navbar-inverse">
-  <div class="container">
-    <%= link_to "Crowdeo", root_path, id: "logo" %>
-    <nav>
-      <ul class="nav navbar-nav navbar-right">
-        <li><%= link_to "Home", root_path %></li>
-        <% if logged_in? %>
-          <li class="dropdown">
-            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-              Account <b class="caret"></b>
-            </a>
-            <ul class="dropdown-menu">
-              <li><%= link_to "Profile", current_user %></li>
-              <li class="divider"></li>
-              <li><%= link_to "Log out", logout_path, method: :delete %></li>
-            </ul>
-          </li>
-        <% else %>
-          <li><%= link_to "Log in", login_path %></li>
-        <% end %>
-      </ul>
-    </nav>
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+
+  <%= link_to "Crowdeo", root_path, class: "navbar-brand" %>
+
+  <%= form_tag("/", method: "get", class: "form-inline my-2 my-lg-0") do %>
+      <%= search_field :search, :query, class: "form-control mr-sm-2", placeholder: "Search category (e.g sport)" %>
+      <%= submit_tag "Search", class: "btn btn-outline-primary my-2 my-sm-0" %>
+  <% end %>
+
+  <div class="navbar-collapse collapse">
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item">
+        <%= link_to "Home", root_path, class: "nav-link" %>
+      </li>
+      <li>
+        <%= link_to "Events", all_events_path, class: "nav-link" %>
+      </li>
+      <% if logged_in? %>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Account
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+            <%= link_to "Profile", current_user, class: "dropdown-item" %>
+            <div class="dropdown-divider"></div>
+            <%= link_to "Log out", logout_path, method: :delete, class: "dropdown-item" %>
+          </div>
+      <% else %>
+        <li class="nav-item">
+          <%= link_to "Log in", login_path, class: "nav-link" %>
+        </li>
+      <% end %>
+    </ul>
   </div>
-</header>
+</nav>

@@ -18,7 +18,7 @@ class EventsController < ApplicationController
 
     events_to_display =
         all_events
-            .order('created_at DESC')
+            .order('created_at DESC, name ASC')
             .offset(page_items_count * (@pagination.current_page - 1))
             .limit(page_items_count)
 
@@ -52,7 +52,7 @@ class EventsController < ApplicationController
 
     events_to_display =
         all_my_events
-            .order('created_at DESC')
+            .order('created_at DESC, name ASC')
             .offset(page_items_count * (@pagination.current_page - 1))
             .limit(page_items_count)
 
@@ -84,7 +84,7 @@ class EventsController < ApplicationController
 
     events_to_display =
         all_attending_events
-            .order('created_at DESC')
+            .order('created_at DESC, name ASC')
             .offset(page_items_count * (@pagination.current_page - 1))
             .limit(page_items_count)
 

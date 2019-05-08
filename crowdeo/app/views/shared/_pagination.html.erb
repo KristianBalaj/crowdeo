@@ -4,7 +4,7 @@
     <ul class="pagination">
       <% if @pagination.is_first_page? %>
         <li class="page-item disabled">
-          <a>Previous</a>
+          <a class="page-link" aria-disabled="true">Previous</a>
         </li>
       <% else %>
         <li class="page-item">
@@ -27,14 +27,14 @@
         <% end %>
 
         <% if group_id < page_ranges.length - 1  %>
-          <li class="page-item"><a>...</a></li>
+          <li class="page-item"><a class="page-link">...</a></li>
         <% end %>
 
       <% end %>
 
       <% if @pagination.is_last_page? %>
         <li class="page-item disabled">
-          <a>Next</a>
+          <a class="page-link" aria-disabled="true">Next</a>
         </li>
       <% else %>
         <li class="page-item">
