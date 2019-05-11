@@ -7,7 +7,7 @@
   </div>
 
   <div class="row">
-    <div class="col-md-6 offset-md-3">
+    <div class="col-md-6 col-md-offset-3">
       <%= form_for(@user, url: signup_path) do |f| %>
 
         <%= render 'shared/error_messages', errors: @user.errors %>
@@ -28,9 +28,14 @@
         <%= f.label :password_confirmation, "Confirmation" %>
         <%= f.password_field :password_confirmation, class: 'form-control' %>
 
-        <%= f.label :calendar_sync? %>
+        <%= f.label :gender, 'Male', value: 'male' %>
+        <%= f.radio_button :gender_id, '0', { class: 'form-control', checked: true } %>
+        <%= f.label :gender, 'Female', value: 'female' %>
+        <%= f.radio_button :gender_id, '1', class: 'form-control' %>
+
+        <%= f.label :calendar_sync %>
         <small>(Do you want to add all attending events to your calendar?)</small>
-        <%= f.check_box :calendar_sync?, class: 'custom-control-input', id: 'customSwitch1' %>
+        <%= f.check_box :calendar_sync, class: 'form-control', id: 'customSwitch1' %>
 
         <%= f.submit "Create my account", class: "btn btn-primary" %>
       <% end %>

@@ -13,7 +13,7 @@ class UsersController < ApplicationController
     if @user.save
       log_in @user
       flash[:success] = "Account created successfully."
-      redirect_to events_path
+      redirect_to all_events_path
     else
       render 'new'
     end
@@ -28,7 +28,8 @@ class UsersController < ApplicationController
         :email,
         :password,
         :password_confirmation,
-        :calendar_sync?)
+        :calendar_sync?,
+        :gender_id)
   end
 
 end

@@ -1,33 +1,45 @@
-<div class="album py=5 bg-light">
 
-  <div class="row">
-    <% @event_cards_data_arr.each do |event_card_model| %>
+<% if @event_cards_data_arr.any? %>
 
-      <div class="col-md-4">
-        <div class="card mb-4 shadow-sm">
-          <div class="card-body">
-            <h5 class="card-title"><%= event_card_model.event_model.name %></h5>
-            <h6 class="card-subtitle mb-2 text-muted">Organizer: <%= event_card_model.author_model.nick_name %></h6>
-            <h6 class="card-subtitle mb-2 text-muted">Total attendants: <%= event_card_model.attendants_count %></h6>
-            <p class="card-text"><%= event_card_model.event_model.description %></p>
-          </div>
-          <div class="d-flex justify-content-between align-items-center">
-            <div class="btn-group">
-              <%= link_to "View", event_show_path(event_card_model.event_model), class: "btn btn-sm btn-outline-secondary" %>
+  <div class="album py=5 bg-light">
+    <div class="row">
 
-              <% if event_card_model.editable? %>
-                <%= link_to "Edit", edit_event_path(event_card_model.event_model), class: "btn btn-sm btn-outline-secondary" %>
-              <% end %>
+      <% @event_cards_data_arr.each do |event_card_model| %>
 
+        <div class="col-md-4">
+          <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+              <h5 class="card-title"><%= event_card_model.event_name %></h5>
+              <h6 class="card-subtitle mb-2 text-muted">Organizer: <%= event_card_model.author_nick %></h6>
+              <h6 class="card-subtitle mb-2 text-muted">Total attendants: <%= event_card_model.attendants_count %></h6>
+              <p class="card-text"><%= event_card_model.event_description %></p>
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="btn-group">
+                <%= link_to "View", event_show_path(event_card_model.event_id), class: "btn btn-sm btn-outline-secondary" %>
+
+                <% if event_card_model.editable? %>
+                  <%= link_to "Edit", edit_event_path(event_card_model.event_id), class: "btn btn-sm btn-outline-secondary" %>
+
+                <% end %>
+
+              </div>
+            </div>
+            <div class="card-footer text-muted">
+              <small class="text-muted">Created <%= time_ago_in_words event_card_model.event_created_at %> ago</small>
             </div>
           </div>
-          <div class="card-footer text-muted">
-            <small class="text-muted">Created <%= time_ago_in_words event_card_model.event_model.created_at %> ago</small>
-          </div>
         </div>
-      </div>
 
-    <% end %>
+      <% end %>
+
+    </div>
   </div>
 
-</div>
+
+<% else %>
+  <div class="row justify-content-center">
+    <h2>No events here</h2>
+  </div>
+
+<% end %>

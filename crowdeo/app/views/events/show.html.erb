@@ -10,6 +10,13 @@
         <%= link_to "Attend", event_attend_path(@event.id), method: :put, class: "btn btn-primary btn-lg" %>
       <% end %>
     </p>
+
+    <% if @is_my_event %>
+      <p>
+        <%= link_to "Delete event", delete_event_path(@event), method: :delete, class: "btn btn-primary btn-lg" %>
+      </p>
+    <% end %>
+
   </div>
 
   <%= link_to "Back", all_events_path, class: "btn btn-primary btn-lg" %>

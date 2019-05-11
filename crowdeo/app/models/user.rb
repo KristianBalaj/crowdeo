@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  has_many :event_attendances
+
   before_save { self.email = email.downcase }
   validates :nick_name,
             presence: true,
@@ -14,6 +16,7 @@ class User < ApplicationRecord
             presence: true,
             length: { minimum: 6 }
   has_secure_password
+
 
   private
 

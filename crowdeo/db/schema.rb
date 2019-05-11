@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_12_205526) do
+ActiveRecord::Schema.define(version: 2019_05_11_155501) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -28,7 +28,7 @@ ActiveRecord::Schema.define(version: 2019_04_12_205526) do
     t.date "start_date"
     t.date "end_date"
     t.integer "capacity"
-    t.boolean "is_filter?"
+    t.boolean "is_filter"
     t.date "from_birth_date"
     t.string "location_name"
     t.string "location_description"
@@ -39,17 +39,34 @@ ActiveRecord::Schema.define(version: 2019_04_12_205526) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "events_gender_filters", force: :cascade do |t|
+    t.integer "event_id"
+    t.integer "gender_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "genders", force: :cascade do |t|
+    t.string "gender_tag"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "nick_name"
     t.date "birth_date"
     t.string "email"
-    t.boolean "calendar_sync?"
+    t.boolean "calendar_sync"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "password_digest"
+    t.integer "gender_id"
   end
 
   add_foreign_key "event_attendances", "events"
   add_foreign_key "event_attendances", "users"
   add_foreign_key "events", "users", column: "author_id"
+  add_foreign_key "events_gender_filters", "events"
+  add_foreign_key "events_gender_filters", "genders"
+  add_foreign_key "users", "genders"
 end
