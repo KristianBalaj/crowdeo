@@ -7,7 +7,7 @@ class Event < ApplicationRecord
   validates :end_date, presence: true
 
   def self.get_all_events_count
-    return ActiveRecord::Base.connection.execute('SELECT rows_count FROM events_count').first.rows_count
+    return ActiveRecord::Base.connection.execute('SELECT rows_count FROM events_count').first["rows_count"]
   end
 
   # @return [Boolean] true when deletion completed successfully otherwise false
@@ -29,7 +29,6 @@ class Event < ApplicationRecord
       event = nil
       ActiveRecord::Base.transaction do
         event = Event.create(event_hash)
-        debugger
         if is_filter
           permit_gender_id_arr.each do |permitted_gender_id|
             EventsGenderFilter.create(event_id: event.id, gender_id: permitted_gender_id)
@@ -142,11 +141,9 @@ class Event < ApplicationRecord
       event_data_query = event_data_query.where("events.name LIKE ?", search_name_pattern)
     end
 
-    where_cond = ""
+    where_cond = "0=1"
     event_data_query.each_with_index do |data, id|
-      if id != 0
-        where_cond = where_cond + ' OR '
-      end
+      where_cond = where_cond + ' OR '
       where_cond = where_cond + "events.name = '#{data.event_name}'"
     end
 
