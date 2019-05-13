@@ -6,6 +6,10 @@ class Event < ApplicationRecord
   validates :start_date, presence: true
   validates :end_date, presence: true
 
+  def self.get_all_events_count
+    return ActiveRecord::Base.connection.execute('SELECT rows_count FROM events_count').first.rows_count
+  end
+
   # @return [Boolean] true when deletion completed successfully otherwise false
   def self.delete_event(event_to_delete)
     begin
@@ -25,6 +29,7 @@ class Event < ApplicationRecord
       event = nil
       ActiveRecord::Base.transaction do
         event = Event.create(event_hash)
+        debugger
         if is_filter
           permit_gender_id_arr.each do |permitted_gender_id|
             EventsGenderFilter.create(event_id: event.id, gender_id: permitted_gender_id)
@@ -110,12 +115,9 @@ class Event < ApplicationRecord
   def self.query_event_card_data(page_id, page_items_count, current_user, attending_events, user_events, search_name_pattern)
     event_data_query =
         Event
-            .left_joins(:event_attendances)
             .left_joins(:events_gender_filters)
+            .joins("JOIN users ON users.id = events.author_id")
             .where("events.is_filter = FALSE OR events_gender_filters.gender_id = #{current_user.gender_id}")
-            .where(if attending_events then "event_attendances.user_id = #{current_user.id}" else '1=1' end)
-            .where(if user_events then "events.author_id = #{current_user.id}" else '1=1' end)
-            .group('events.id')
             .order('events.created_at DESC, events.name ASC')
             .offset(page_items_count * (page_id - 1))
             .limit(page_items_count)
@@ -124,24 +126,53 @@ class Event < ApplicationRecord
                 'events.name as event_name',
                 'events.description',
                 'events.author_id',
-                'events.created_at as event_created_at',
-                'COUNT(*) FILTER (WHERE event_attendances.id IS NOT NULL) as attendance')
+                'users.nick_name as author_nick_name',
+                'events.created_at as event_created_at')
 
-    unless search_name_pattern.blank?
-      event_data_query = event_data_query.where("events.name LIKE ?", '%' + search_name_pattern + '%')
+    if user_events
+      event_data_query = event_data_query
+          .where("events.author_id = #{current_user.id}")
+    elsif attending_events
+      event_data_query = event_data_query
+          .left_joins(:event_attendances)
+          .where("event_attendances.user_id = #{current_user.id}")
     end
 
-    # adding author name
-    return User
-               .joins("INNER JOIN (#{event_data_query.to_sql}) as res on users.id = res.author_id")
-               .order('event_created_at DESC, event_name ASC')
-               .select(
-                   'res.event_id',
-                   'res.event_name',
-                   'res.description',
-                   'res.event_created_at',
-                   'res.attendance',
-                   'res.author_id',
-                   'users.nick_name as author_nick_name')
+    unless search_name_pattern.blank?
+      event_data_query = event_data_query.where("events.name LIKE ?", search_name_pattern)
+    end
+
+    where_cond = ""
+    event_data_query.each_with_index do |data, id|
+      if id != 0
+        where_cond = where_cond + ' OR '
+      end
+      where_cond = where_cond + "events.name = '#{data.event_name}'"
+    end
+
+    attendances = Event
+        .left_joins(:event_attendances)
+        .where(where_cond)
+        .group('events.id')
+        .order('events.created_at DESC, events.name ASC')
+        .select('COUNT(*) FILTER (WHERE event_attendances.id IS NOT NULL) as attendance').to_a
+
+    result = []
+    event_data_query.each_with_index do |data, id|
+      item = OpenStruct.new(data.attributes)
+      # this condition is only because there are repeating events
+      # and that causes this array be less than the event_data_query array
+      # The reason is that the data generation generates repeating gender filters.
+      # In real situation it can't happen.
+      if attendances[id] == nil
+        item.attendance = attendances[0].attendance
+      else
+        item.attendance = attendances[id].attendance
+      end
+
+      result.push(item)
+    end
+
+    return result
   end
 end

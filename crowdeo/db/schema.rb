@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_11_155501) do
+ActiveRecord::Schema.define(version: 2019_05_13_200625) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -20,6 +20,8 @@ ActiveRecord::Schema.define(version: 2019_05_11_155501) do
     t.integer "event_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["event_id"], name: "index_event_attendances_on_event_id"
+    t.index ["user_id"], name: "index_event_attendances_on_user_id"
   end
 
   create_table "events", force: :cascade do |t|
@@ -37,6 +39,13 @@ ActiveRecord::Schema.define(version: 2019_05_11_155501) do
     t.integer "author_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["author_id"], name: "index_events_on_author_id"
+    t.index ["created_at", "name"], name: "index_events_on_created_at_and_name", order: { created_at: :desc }
+    t.index ["name"], name: "index_events_on_name"
+  end
+
+  create_table "events_count", id: false, force: :cascade do |t|
+    t.bigint "rows_count"
   end
 
   create_table "events_gender_filters", force: :cascade do |t|
@@ -44,10 +53,31 @@ ActiveRecord::Schema.define(version: 2019_05_11_155501) do
     t.integer "gender_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["event_id"], name: "index_events_gender_filters_on_event_id"
   end
 
   create_table "genders", force: :cascade do |t|
     t.string "gender_tag"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "table1", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "table2", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "table3", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "table4", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

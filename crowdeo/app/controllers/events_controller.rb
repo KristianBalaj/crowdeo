@@ -10,7 +10,7 @@ class EventsController < ApplicationController
     @event_cards_data_arr = []
 
     page_items_count = 20
-    events_count = Event.all.count
+    events_count = Event.get_all_events_count
 
     #check if parameter is an integer
     @pagination =
@@ -138,6 +138,15 @@ class EventsController < ApplicationController
 
     if current_user.id != @event.author_id
       redirect_to all_events_path
+    end
+  end
+
+  def update
+    @event = Event.find(params[:id])
+    if @event.update_attributes(event_params)
+      redirect_to all_events_path
+    else
+      render 'edit'
     end
   end
 
