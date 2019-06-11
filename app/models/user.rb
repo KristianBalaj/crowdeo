@@ -15,6 +15,8 @@ class User < ApplicationRecord
   validates :password,
             presence: true,
             length: { minimum: 6 }
+  validates :gender_id,
+            presence: true
   has_secure_password
 
 

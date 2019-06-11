@@ -6,7 +6,8 @@ class UsersLoginTest < ActionDispatch::IntegrationTest
     User.new(nick_name: "nick",
              email: "user@mail.com",
              password: "password",
-             password_confirmation: "password").save()
+             password_confirmation: "password",
+             gender_id: 1).save()
   end
 
   test "failed login" do
@@ -34,7 +35,7 @@ class UsersLoginTest < ActionDispatch::IntegrationTest
         password: "password"
     }}
     follow_redirect!
-    assert_template 'users/show'
+    assert_template 'events/index'
     assert_select "a[href=?]", login_path, 0
     assert_select 'a[href=?]', logout_path
     assert is_logged_in?

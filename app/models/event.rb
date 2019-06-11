@@ -6,10 +6,6 @@ class Event < ApplicationRecord
   validates :start_date, presence: true
   validates :end_date, presence: true
 
-  def self.get_all_events_count
-    return ActiveRecord::Base.connection.execute('SELECT rows_count FROM events_count').first["rows_count"]
-  end
-
   # @return [Boolean] true when deletion completed successfully otherwise false
   def self.delete_event(event_to_delete)
     begin

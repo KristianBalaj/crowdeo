@@ -7,7 +7,8 @@ class UserTest < ActiveSupport::TestCase
         nick_name: "user1",
         email: "user1@smth.com",
         password: "password",
-        password_confirmation: "password")
+        password_confirmation: "password",
+        gender_id: 0)
   end
 
   test "should be valid" do
@@ -78,6 +79,11 @@ class UserTest < ActiveSupport::TestCase
 
   test "password should have minimum length" do
     @user.password = @user.password_confirmation = "a" * 5
+    assert_not @user.valid?
+  end
+
+  test "gender not empty" do
+    @user.gender_id = ""
     assert_not @user.valid?
   end
 end

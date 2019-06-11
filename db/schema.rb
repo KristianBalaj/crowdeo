@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_13_172757) do
+ActiveRecord::Schema.define(version: 2019_05_12_095058) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -42,10 +42,6 @@ ActiveRecord::Schema.define(version: 2019_05_13_172757) do
     t.index ["author_id"], name: "index_events_on_author_id"
     t.index ["created_at", "name"], name: "index_events_on_created_at_and_name", order: { created_at: :desc }
     t.index ["name"], name: "index_events_on_name"
-  end
-
-  create_table "events_count", id: false, force: :cascade do |t|
-    t.bigint "rows_count"
   end
 
   create_table "events_gender_filters", force: :cascade do |t|

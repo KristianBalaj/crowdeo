@@ -9,7 +9,8 @@ class UsersSignupTest < ActionDispatch::IntegrationTest
           nick_name: "",
           email: "user@invalid",
           password: "smth",
-          password_confirmation: "smth_else"
+          password_confirmation: "smth_else",
+          gender_id: 1
       }}
     end
     assert_template 'users/new'
@@ -24,7 +25,8 @@ class UsersSignupTest < ActionDispatch::IntegrationTest
           nick_name: "nick",
           email: "user@mail.com",
           password: "password",
-          password_confirmation: "password"
+          password_confirmation: "password",
+          gender_id: 1
       }}
     end
     follow_redirect!

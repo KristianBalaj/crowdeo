@@ -10,7 +10,7 @@ class EventsController < ApplicationController
     @event_cards_data_arr = []
 
     page_items_count = 20
-    events_count = Event.get_all_events_count
+    events_count = Event.count
 
     #check if parameter is an integer
     @pagination =

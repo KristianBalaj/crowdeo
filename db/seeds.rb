@@ -6,8 +6,6 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
-puts "Starting seed..."
-
 EventsGenderFilter.destroy_all
 EventAttendance.destroy_all
 User.destroy_all
@@ -21,10 +19,15 @@ puts 'Creating users'
 users_to_add = []
 
 (0..10).each do |id|
-  users_to_add.push({id: id, nick_name: "nick#{id}", email: "email#{id}@mail.com", password: "password" })
+  users_to_add.push({id: id, nick_name: "nick#{id}", email: "email#{id}@mail.com", password: "password" , gender_id: rand(0..1)})
 end
 
-User.create(users_to_add)
+User.create(users_to_add) do |u|
+  unless u.valid?
+    puts "user not created, ABORT!"
+    return
+  end
+end
 
 ActiveRecord::Base.connection.execute('TRUNCATE events_count')
 #Insert initial events count
