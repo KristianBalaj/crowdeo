@@ -1,1 +1,1 @@
-echo "test"
+release: ./release_tasks.sh
