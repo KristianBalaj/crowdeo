@@ -15,22 +15,18 @@ Gender.destroy_all
 puts 'Creating genders'
 Gender.create([{ id: 0, gender_tag: "male" }, { id: 1, gender_tag: "female" }])
 
-puts 'Creating users'
-users_to_add = []
-
-(0..10).each do |id|
-  users_to_add.push({id: id, nick_name: "nick#{id}", email: "email#{id}@mail.com", password: "password" , gender_id: rand(0..1)})
-end
-
-User.create(users_to_add) do |u|
-  unless u.valid?
-    puts "user not created, ABORT!"
-    return
-  end
-end
-
-ActiveRecord::Base.connection.execute('TRUNCATE events_count')
-#Insert initial events count
-ActiveRecord::Base.connection.execute("INSERT INTO events_count (rows_count) VALUES (#{Event.all.count})")
+# puts 'Creating users'
+# users_to_add = []
+#
+# (0..10).each do |id|
+#   users_to_add.push({id: id, nick_name: "nick#{id}", email: "email#{id}@mail.com", password: "password" , gender_id: rand(0..1)})
+# end
+#
+# User.create(users_to_add) do |u|
+#   unless u.valid?
+#     puts "user not created, ABORT!"
+#     return
+#   end
+# end
 
 puts "Seed completed."

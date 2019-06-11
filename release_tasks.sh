@@ -1,2 +1,2 @@
-echo "test"
-echo "smth other"
+rails db:migrate
+rails db:seed
