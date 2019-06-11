@@ -1,1 +1,1 @@
-release: ./release_tasks.sh
+release: bash ./release_tasks.sh
