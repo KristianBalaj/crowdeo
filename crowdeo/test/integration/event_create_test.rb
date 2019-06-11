@@ -20,7 +20,5 @@ class EventCreateTest < ActionDispatch::IntegrationTest
     # }}
     #
     # follow_redirect!
-
-
   end
 end

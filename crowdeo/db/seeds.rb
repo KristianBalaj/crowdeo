@@ -8,11 +8,25 @@
 
 puts "Starting seed..."
 
+EventsGenderFilter.destroy_all
+EventAttendance.destroy_all
+User.destroy_all
+Event.destroy_all
 Gender.destroy_all
-ActiveRecord::Base.connection.execute('TRUNCATE events_count')
 
+puts 'Creating genders'
 Gender.create([{ id: 0, gender_tag: "male" }, { id: 1, gender_tag: "female" }])
 
+puts 'Creating users'
+users_to_add = []
+
+(0..10).each do |id|
+  users_to_add.push({id: id, nick_name: "nick#{id}", email: "email#{id}@mail.com", password: "password" })
+end
+
+User.create(users_to_add)
+
+ActiveRecord::Base.connection.execute('TRUNCATE events_count')
 #Insert initial events count
 ActiveRecord::Base.connection.execute("INSERT INTO events_count (rows_count) VALUES (#{Event.all.count})")
 
