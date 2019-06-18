@@ -11,8 +11,80 @@
 
 <div class="container">
   <h3>Events closest to you</h3>
-  <%= link_to "Use my location", newevent_path, class: "btn btn-primary my-2" %>
+  <div id="locationDisabled">
+    <a class="btn btn-primary my-2" id="useLocation">Use my exact location</a>
+  </div>
+  <div id="locationEnabled">
+    <p id="lat"></p>
+    <p id="lng"></p>
+    <div id="mapid"></div>
+  </div>
+
   <h3>Other events</h3>
   <%= render 'shared/pagination' %>
   <%= render 'events/partials/event_cards' %>
 </div>
+
+<script>
+
+  var map = addMap('mapid', [0, 0], 20);
+
+  function enableLocationContent()
+  {
+      document.getElementById('locationDisabled').style.display = 'none';
+      document.getElementById('locationEnabled').style.display = 'block';
+  }
+
+  $('document').ready(function ()
+  {
+    navigator.permissions.query({name:'geolocation'}).then(function(result)
+    {
+        if(result.state === 'granted')
+        {
+            enableLocationContent();
+        }
+        else if(result.state === 'prompt')
+        {
+            document.getElementById('locationDisabled').style.display = 'block';
+            document.getElementById('locationEnabled').style.display = 'none';
+        }
+        else if(result.state === 'denied')
+        {
+            document.getElementById('locationDisabled').style.display = 'none';
+            document.getElementById('locationEnabled').style.display = 'none';
+        }
+    });
+  });
+
+  $('#useLocation').click(function(){
+      if(navigator.geolocation)
+      {
+          var geoSuccess = function(position)
+          {
+              enableLocationContent();
+              document.getElementById('lat').innerHTML = position.coords.latitude;
+              document.getElementById('lng').innerHTML = position.coords.longitude;
+
+              map.setView([position.coords.latitude, position.coords.longitude]);
+              L.marker([position.coords.latitude, position.coords.longitude]).addTo(map);
+          };
+
+          var geoErr = function(error)
+          {
+              var request = new XMLHttpRequest();
+              request.onload = function() {
+                  enableLocationContent();
+                  var location = JSON.parse(request.response);
+                  console.log(request.response);
+                  map.setView([location.lat, location.lon]);
+                  L.marker([location.lat, location.lon]).addTo(map);
+              };
+
+              request.open('GET', 'http://ip-api.com/json');
+              request.send();
+          };
+
+          navigator.geolocation.getCurrentPosition(geoSuccess, geoErr);
+      }
+  });
+</script>

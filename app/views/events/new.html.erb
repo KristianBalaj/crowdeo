@@ -73,9 +73,7 @@
 
   var popup = L.popup();
   var eventPosMarker = null;
-  var mymap = addMap('mapid', [51.505, -0.09], 15);
-
-  mymap.on('click', onMapClick);
+  var mymap = null;
 
   function addEventPosMarker(lat, lng)
   {
@@ -105,8 +103,23 @@
 
       if(!(lat === 'x' || lng === 'x'))
       {
+          mymap = addMap('mapid', [lat, lng]);
           addEventPosMarker(lat, lng);
-          mymap.setView([lat, lng]);
+          mymap.on('click', onMapClick);
+      }
+      else
+      {
+          var onLocationGet = function (lat, lng) {
+              mymap = addMap('mapid', [lat, lng]);
+              mymap.on('click', onMapClick);
+          };
+
+          var onLocationGetFailed = function () {
+              mymap = addMap('mapid', [0, 0], 1);
+              mymap.on('click', onMapClick);
+          };
+
+          getLocation(onLocationGet, onLocationGetFailed);
       }
   });
 
