@@ -10,6 +10,9 @@
 </section>
 
 <div class="container">
+  <h3>Events closest to you</h3>
+  <%= link_to "Use my location", newevent_path, class: "btn btn-primary my-2" %>
+  <h3>Other events</h3>
   <%= render 'shared/pagination' %>
   <%= render 'events/partials/event_cards' %>
 </div>

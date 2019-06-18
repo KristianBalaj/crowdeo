@@ -6,14 +6,24 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
-EventsGenderFilter.destroy_all
-EventAttendance.destroy_all
-User.destroy_all
-Event.destroy_all
-Gender.destroy_all
+# EventsGenderFilter.destroy_all
+# EventAttendance.destroy_all
+# User.destroy_all
+# Event.destroy_all
+# Gender.destroy_all
 
-puts 'Creating genders'
-Gender.create([{ id: 0, gender_tag: "male" }, { id: 1, gender_tag: "female" }])
+puts 'Seeding DB'
+
+puts 'Creating missing genders'
+genders_to_add = [{ id: 0, gender_tag: "male" }, { id: 1, gender_tag: "female" }]
+
+genders_to_add.each do |g|
+  unless Gender.find_by(id: g[:id])
+    Gender.create(g)
+  end
+end
+
+# Gender.create([{ id: 0, gender_tag: "male" }, { id: 1, gender_tag: "female" }])
 
 # puts 'Creating users'
 # users_to_add = []

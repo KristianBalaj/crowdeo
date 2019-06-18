@@ -5,6 +5,7 @@ class Event < ApplicationRecord
   validates :name, presence: true
   validates :start_date, presence: true
   validates :end_date, presence: true
+  validates :latitude, presence: true
 
   # @return [Boolean] true when deletion completed successfully otherwise false
   def self.delete_event(event_to_delete)
@@ -20,21 +21,27 @@ class Event < ApplicationRecord
     return true
   end
 
-  def self.create_event_with_filters(event_hash, is_filter, permit_gender_id_arr)
-    begin
-      event = nil
-      ActiveRecord::Base.transaction do
-        event = Event.create(event_hash)
-        if is_filter
-          permit_gender_id_arr.each do |permitted_gender_id|
-            EventsGenderFilter.create(event_id: event.id, gender_id: permitted_gender_id)
-          end
+  def self.create_event_with_filters(event_hash, lat_lng_arr, is_filter, permit_gender_id_arr)
+    event = nil
+    ActiveRecord::Base.transaction do
+      event = Event.new(event_hash)
+      begin
+        lat = Float(lat_lng_arr[0])
+        lng = Float(lat_lng_arr[1])
+        event.latitude = lat
+        event.longitude = lng
+      rescue
+        event.latitude = nil
+        event.longitude = nil
+      end
+      if is_filter
+        permit_gender_id_arr.each do |permitted_gender_id|
+          EventsGenderFilter.create(event_id: event.id, gender_id: permitted_gender_id)
         end
       end
-      return event
-    rescue
-      return nil
+      event.save
     end
+    return event
   end
 
   # Gets event cards data for given page with given items per page.

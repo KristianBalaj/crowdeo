@@ -64,25 +64,26 @@ class EventsController < ApplicationController
       return
     end
 
-    event_hash = event_params
-    event_hash[:author_id] = current_user.id
+    event_hash_without_geo = permitted_event_params
+    event_hash_without_geo[:author_id] = current_user.id
+
+    lat = params[:event][:lat]
+    lng = params[:event][:lng]
+
     @event =
         Event.create_event_with_filters(
-            event_hash,
+            event_hash_without_geo,
+            [lat, lng],
             !params[:event][:is_filter].to_i.zero?,
             params[:permit_gender].map(&:to_i))
 
-    if @event != nil and @event.valid?
+    if @event.valid?
       flash[:success] = "Event created successfully."
       redirect_to event_show_path @event
     else
-      if @event == nil
-        @event = Event.new(event_hash)
-      end
       render 'new'
     end
   end
-
 
   def attend_event
     unless logged_in?
@@ -143,7 +144,7 @@ class EventsController < ApplicationController
 
   def update
     @event = Event.find(params[:id])
-    if @event.update_attributes(event_params)
+    if @event.update_attributes(permitted_event_params)
       redirect_to all_events_path
     else
       render 'edit'
@@ -174,7 +175,7 @@ class EventsController < ApplicationController
 
   private
 
-  def event_params
+  def permitted_event_params
     params.require(:event).permit(
         :name,
         :description,

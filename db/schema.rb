@@ -14,6 +14,7 @@ ActiveRecord::Schema.define(version: 2019_05_12_095058) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+  enable_extension "postgis"
 
   create_table "event_attendances", force: :cascade do |t|
     t.integer "user_id"
@@ -34,11 +35,11 @@ ActiveRecord::Schema.define(version: 2019_05_12_095058) do
     t.date "from_birth_date"
     t.string "location_name"
     t.string "location_description"
-    t.float "longitude"
-    t.float "latitude"
     t.integer "author_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.float "latitude"
+    t.float "longitude"
     t.index ["author_id"], name: "index_events_on_author_id"
     t.index ["created_at", "name"], name: "index_events_on_created_at_and_name", order: { created_at: :desc }
     t.index ["name"], name: "index_events_on_name"

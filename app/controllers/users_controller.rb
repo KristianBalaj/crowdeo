@@ -9,7 +9,7 @@ class UsersController < ApplicationController
   end
 
   def create
-    @user = User.new(user_params)
+    @user = User.new(permitted_user_params)
     if @user.save
       log_in @user
       flash[:success] = "Account created successfully."
@@ -21,7 +21,7 @@ class UsersController < ApplicationController
 
   private
 
-  def user_params
+  def permitted_user_params
     params.require(:user).permit(
         :nick_name,
         :birth_date,
