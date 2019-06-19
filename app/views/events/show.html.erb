@@ -27,6 +27,9 @@
 </div>
 
 <script>
-  var mymap = addMap('mapid', [51.505, -0.09], 15);
-  L.marker([<%= @event.latitude %>, <%= @event.longitude %>]).addTo(mymap);
+  var lat = <%= @event.latitude %>;
+  var lng = <%= @event.longitude %>;
+
+  var mymap = addMap('mapid', [lat, lng]);
+  L.marker([lat, lng]).addTo(mymap);
 </script>

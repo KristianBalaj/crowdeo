@@ -10,14 +10,18 @@
 </section>
 
 <div class="container">
-  <h3>Events closest to you</h3>
+  <h3>Events closest to you by location</h3>
   <div id="locationDisabled">
-    <a class="btn btn-primary my-2" id="useLocation">Use my exact location</a>
+    <div class="row justify-content-center">
+      <a class="btn btn-primary my-2" id="useLocation">Use my exact location</a>
+    </div>
   </div>
-  <div id="locationEnabled">
-    <p id="lat"></p>
-    <p id="lng"></p>
-    <div id="mapid"></div>
+  <div class="album py=5 bg-light">
+    <div id="closestEvents" class="row">
+    </div>
+  </div>
+  <div class="row justify-content-center">
+    <a class="btn btn-primary my-2" id="useLocation">Load more</a>
   </div>
 
   <h3>Other events</h3>
@@ -26,13 +30,39 @@
 </div>
 
 <script>
-
-  var map = addMap('mapid', [0, 0], 20);
-
-  function enableLocationContent()
+  function loadCloseEvents()
   {
-      document.getElementById('locationDisabled').style.display = 'none';
-      document.getElementById('locationEnabled').style.display = 'block';
+      getLocation(function(lat, lng) {
+          document.getElementById('locationDisabled').style.display = 'none';
+          request = new XMLHttpRequest();
+          request.onload = function () {
+              var eventsResult = JSON.parse(request.response);
+              eventsResult.forEach(function (item, id) {
+                  var eventShowHref = '<%= request.base_url + event_show_path('event_id') %>';
+                  eventShowHref = eventShowHref.replace('/event_id', '/' + item.id);
+                  var eventEditHref = '<%= request.base_url + edit_event_path('event_id') %>';
+                  eventEditHref = eventEditHref.replace('/event_id', '/' + item.id);
+                  getEventCardNode(
+                      eventShowHref,
+                      eventEditHref,
+                      item.name,
+                      item.attendance,
+                      item.author_nick,
+                      item.description,
+                      item.created_time_ago,
+                      false).appendTo(document.getElementById('closestEvents'));
+              });
+          };
+          url = '<%= request.base_url + url_for(closest_events_path '1000', '1001') %>';
+          url = url.replace('/1000', '/' + lat);
+          url = url.replace('/1001', '/' + lng);
+          request.open('GET', url);
+          request.send();
+      },
+      function(){
+          // TODO: what to do here?
+          console.log('location retrieve failed.');
+      });
   }
 
   $('document').ready(function ()
@@ -41,50 +71,21 @@
     {
         if(result.state === 'granted')
         {
-            enableLocationContent();
+            document.getElementById('locationDisabled').style.display = 'none';
+            loadCloseEvents();
         }
         else if(result.state === 'prompt')
         {
             document.getElementById('locationDisabled').style.display = 'block';
-            document.getElementById('locationEnabled').style.display = 'none';
         }
         else if(result.state === 'denied')
         {
             document.getElementById('locationDisabled').style.display = 'none';
-            document.getElementById('locationEnabled').style.display = 'none';
         }
     });
   });
 
   $('#useLocation').click(function(){
-      if(navigator.geolocation)
-      {
-          var geoSuccess = function(position)
-          {
-              enableLocationContent();
-              document.getElementById('lat').innerHTML = position.coords.latitude;
-              document.getElementById('lng').innerHTML = position.coords.longitude;
-
-              map.setView([position.coords.latitude, position.coords.longitude]);
-              L.marker([position.coords.latitude, position.coords.longitude]).addTo(map);
-          };
-
-          var geoErr = function(error)
-          {
-              var request = new XMLHttpRequest();
-              request.onload = function() {
-                  enableLocationContent();
-                  var location = JSON.parse(request.response);
-                  console.log(request.response);
-                  map.setView([location.lat, location.lon]);
-                  L.marker([location.lat, location.lon]).addTo(map);
-              };
-
-              request.open('GET', 'http://ip-api.com/json');
-              request.send();
-          };
-
-          navigator.geolocation.getCurrentPosition(geoSuccess, geoErr);
-      }
+      loadCloseEvents();
   });
 </script>

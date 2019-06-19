@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
 
+  float_regex = '[+-]?[0-9]*\.?[0-9]*'
   root 'static_pages#home'
 
   get 'sessions/new'
@@ -20,6 +21,7 @@ Rails.application.routes.draw do
   get '/events/:id/edit', to: 'events#edit', as: 'edit_event'
   get '/newevent', to: 'events#new'
   get '/events/search', to: 'events#search'
+  get '/events/closest/:lat/:lng', to: 'events#closest_events', as: 'closest_events', constraints: { lat: float_regex, lng: float_regex}
   patch '/events/:id', to: 'events#update', as: 'update_event'
   delete '/events/:id', to: 'events#delete', as: 'delete_event'
   post '/newevent', to: 'events#create'

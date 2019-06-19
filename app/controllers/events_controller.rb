@@ -1,3 +1,5 @@
+include EventsHelper
+
 class EventsController < ApplicationController
 
   # This loads all the available events to user
@@ -171,6 +173,32 @@ class EventsController < ApplicationController
       flash[:danger] = 'An error occured while deleting the event.'
       redirect_to event_show_path event
     end
+  end
+
+  def closest_events
+    closest_events_sql = "
+      SELECT
+       events.id,
+       events.name,
+       events.description,
+       events.created_at,
+       users.nick_name as author_nick,
+       st_distance_sphere(ST_POINT(events.latitude, events.longitude)::geometry,ST_POINT(#{params[:lat]}, #{params[:lng]})::geometry) as dist,
+       (SELECT count(*)
+         FROM event_attendances
+         WHERE events.id = event_attendances.event_id) as attendance
+      FROM events
+      JOIN users ON events.author_id = users.id
+      ORDER BY dist ASC
+      LIMIT 3;"
+
+    result = Event.find_by_sql(closest_events_sql).as_json
+    result.each do |item|
+      created_at = item.delete "created_at"
+      item[:created_time_ago] = get_created_ago_text created_at
+    end
+
+    render :json => result.to_json
   end
 
   private
