@@ -11,52 +11,25 @@ function addMap(tag_id, lat_lng_view_arr, zoom = 15)
 
 /**
  * Returns an array of two elements [latitude, longitude].
- * Checks permission for exact location. When permission not allowed, returns approximate location.
  * On location decided, onSuccess callback is called with 2 parameters (latitude, longitude).
  */
 function getLocation(onSuccess, onFail)
 {
-    var calculateApproximateLocation = function(onLocationCaptured)
+    var request = new XMLHttpRequest();
+
+    request.onload = function()
     {
-        var request = new XMLHttpRequest();
-
-        request.onload = function()
+        if(request.status >= 200 && request.status < 300)
         {
-            if(request.status >= 200 && request.status < 300)
-            {
-                var location = JSON.parse(request.response);
-                onLocationCaptured(location.lat, location.lon);
-            }
-            else
-            {
-                onFail();
-            }
-        };
-
-        request.open('GET', 'http://ip-api.com/json');
-        request.send();
+            var location = JSON.parse(request.response);
+            onSuccess(location.lat, location.lon);
+        }
+        else
+        {
+            onFail();
+        }
     };
 
-    if(navigator.geolocation)
-    {
-        var geoSuccess = function(result)
-        {
-            onSuccess(result.coords.latitude, result.coords.longitude);
-        };
-
-        var geoErr = function(result)
-        {
-            calculateApproximateLocation(function(lat, lon) {
-                onSuccess(lat, lon);
-            });
-        };
-
-        navigator.geolocation.getCurrentPosition(geoSuccess, geoErr);
-    }
-    else
-    {
-        calculateApproximateLocation(function(lat, lon) {
-            onSuccess(lat, lon);
-        });
-    }
+    request.open('GET', 'http://ip-api.com/json');
+    request.send();
 }

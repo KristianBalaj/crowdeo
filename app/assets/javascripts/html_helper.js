@@ -27,3 +27,8 @@ function getEventCardNode(
             )
         ));
 }
+
+function getSpinnerNode(id)
+{
+    return $('<span>', {'id': id, 'class': 'spinner-border spinner-border-sm', 'role': 'status', 'aria-hidden': 'true'});
+}

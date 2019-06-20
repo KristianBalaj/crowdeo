@@ -10,10 +10,9 @@
 </section>
 
 <div class="container">
-  <h3>Events closest to you by location</h3>
+  <h3>Events near you</h3>
   <div id="locationDisabled">
     <div class="row justify-content-center">
-      <a class="btn btn-primary my-2" id="useLocation">Use my exact location</a>
     </div>
   </div>
   <div class="album py=5 bg-light">
@@ -21,7 +20,9 @@
     </div>
   </div>
   <div class="row justify-content-center">
-    <a class="btn btn-primary my-2" id="useLocation">Load more</a>
+    <a class="btn btn-primary my-2" id="loadMore">
+      Load more
+    </a>
   </div>
 
   <h3>Other events</h3>
@@ -30,62 +31,101 @@
 </div>
 
 <script>
-  function loadCloseEvents()
+  var eventsLoadedCount = 0;
+
+  function removeAllEvents()
+  {
+      var myNode = document.getElementById('closestEvents');
+      while (myNode.firstChild) {
+          myNode.removeChild(myNode.firstChild);
+      }
+  }
+
+  function loadEvents()
+  {
+      var onEventsReceived = function(events)
+      {
+          setLoadingButton(false);
+          events.forEach(function (item, id) {
+              var eventShowHref = '<%= request.base_url + event_show_path('event_id') %>';
+              eventShowHref = eventShowHref.replace('/event_id', '/' + item.id);
+              var eventEditHref = '<%= request.base_url + edit_event_path('event_id') %>';
+              eventEditHref = eventEditHref.replace('/event_id', '/' + item.id);
+              getEventCardNode(
+                  eventShowHref,
+                  eventEditHref,
+                  item.name,
+                  item.attendance,
+                  item.author_nick,
+                  item.description,
+                  item.created_time_ago,
+                  false).appendTo(document.getElementById('closestEvents'));
+          });
+          eventsLoadedCount += events.length;
+      };
+
+      var onFail = function()
+      {
+          console.log('events loading failed');
+      };
+
+      setLoadingButton(true);
+      getCloseEvents(onEventsReceived, onFail);
+  }
+
+  function setLoadingButton(isLoading)
+  {
+      var button = document.getElementById('loadMore');
+      if(isLoading)
+      {
+          if(!button.classList.contains('disabled'))
+          {
+              button.classList.add('disabled');
+          }
+          if(!button.contains(document.getElementById('spinner')))
+          {
+              getSpinnerNode('spinner').appendTo(button);
+          }
+      }
+      else
+      {
+          if(button.classList.contains('disabled'))
+          {
+              button.classList.remove('disabled');
+          }
+          if(button.contains(document.getElementById('spinner')))
+          {
+              button.removeChild(button.lastChild);
+          }
+      }
+  }
+
+  function getCloseEvents(onEventsReceived, onFail)
   {
       getLocation(function(lat, lng) {
-          document.getElementById('locationDisabled').style.display = 'none';
-          request = new XMLHttpRequest();
-          request.onload = function () {
-              var eventsResult = JSON.parse(request.response);
-              eventsResult.forEach(function (item, id) {
-                  var eventShowHref = '<%= request.base_url + event_show_path('event_id') %>';
-                  eventShowHref = eventShowHref.replace('/event_id', '/' + item.id);
-                  var eventEditHref = '<%= request.base_url + edit_event_path('event_id') %>';
-                  eventEditHref = eventEditHref.replace('/event_id', '/' + item.id);
-                  getEventCardNode(
-                      eventShowHref,
-                      eventEditHref,
-                      item.name,
-                      item.attendance,
-                      item.author_nick,
-                      item.description,
-                      item.created_time_ago,
-                      false).appendTo(document.getElementById('closestEvents'));
-              });
-          };
-          url = '<%= request.base_url + url_for(closest_events_path '1000', '1001') %>';
-          url = url.replace('/1000', '/' + lat);
-          url = url.replace('/1001', '/' + lng);
-          request.open('GET', url);
-          request.send();
-      },
-      function(){
-          // TODO: what to do here?
-          console.log('location retrieve failed.');
-      });
+              document.getElementById('locationDisabled').style.display = 'none';
+              request = new XMLHttpRequest();
+              request.onload = function () {
+                  var eventsResult = JSON.parse(request.response);
+                  onEventsReceived(eventsResult);
+              };
+              url = '<%= request.base_url + url_for(closest_events_path '1000', '1001', '1002') %>';
+              url = url.replace('/1000', '/' + lat);
+              url = url.replace('/1001', '/' + lng);
+              url = url.replace('/1002', '/' + eventsLoadedCount);
+              request.open('GET', url);
+              request.send();
+          },
+          onFail);
   }
 
   $('document').ready(function ()
   {
-    navigator.permissions.query({name:'geolocation'}).then(function(result)
-    {
-        if(result.state === 'granted')
-        {
-            document.getElementById('locationDisabled').style.display = 'none';
-            loadCloseEvents();
-        }
-        else if(result.state === 'prompt')
-        {
-            document.getElementById('locationDisabled').style.display = 'block';
-        }
-        else if(result.state === 'denied')
-        {
-            document.getElementById('locationDisabled').style.display = 'none';
-        }
-    });
+      loadEvents();
   });
 
-  $('#useLocation').click(function(){
-      loadCloseEvents();
+  $('#loadMore').click(function()
+  {
+      loadEvents();
   });
 </script>
