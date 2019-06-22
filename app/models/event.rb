@@ -8,6 +8,7 @@ class Event < ApplicationRecord
   validates :start_time, presence: true
   validates :end_time, presence: true
   validates :latitude, presence: true
+  validates :category_id, presence: true
 
   # @return [Boolean] true when deletion completed successfully otherwise false
   def self.delete_event(event_to_delete)
@@ -46,135 +47,42 @@ class Event < ApplicationRecord
     return event
   end
 
-  # Gets event cards data for given page with given items per page.
-  # Returned event data are for events that are attended by the user.
-  # @return [Object] having attributes:
-  # *event_name*, *description*, *event_id*, *event_created_at*, *attendance*, *author_nick_name*, *author_id*
-  def self.get_attending_event_cards_data(page_id, page_items_count, current_user)
-    event_data_to_display =
-        query_event_card_data(
-            page_id,
-            page_items_count,
-            current_user,
-            true,
-            false,
-            '')
-    return get_event_cards_data_array(event_data_to_display, current_user)
-  end
-
-  # Gets event cards data for given page with given items per page.
-  # Returned event data are for events created by the user.
-  # @return [Object] having attributes:
-  # *event_name*, *description*, *event_id*, *event_created_at*, *attendance*, *author_nick_name*, *author_id*
-  def self.get_users_event_cards_data(page_id, page_items_count, current_user)
-    event_data_to_display =
-        query_event_card_data(
-            page_id,
-            page_items_count,
-            current_user,
-            false,
-            true,
-            '')
-    return get_event_cards_data_array(event_data_to_display, current_user)
-  end
-
-  # Gets event cards data for given page with given items per page.
-  # @return [Object] having attributes:
-  # *event_name*, *description*, *event_id*, *event_created_at*, *attendance*, *author_nick_name*, *author_id*
-  def self.get_all_event_cards_data(page_id, page_items_count, current_user, search_name_pattern)
-    event_data_to_display =
-        query_event_card_data(
-            page_id,
-            page_items_count,
-            current_user,
-            false,
-            false,
-            search_name_pattern)
-    return get_event_cards_data_array(event_data_to_display, current_user)
-  end
-
-
-  private
-
-
-  def self.get_event_cards_data_array(event_data_to_display, current_user)
-    event_cards_data_arr = Array.new
-
-    event_data_to_display.each do |event_to_display|
-      card_data = EventCardData.new(
-          event_to_display.event_name,
-          event_to_display.description,
-          event_to_display.event_id,
-          event_to_display.event_created_at,
-          event_to_display.attendance,
-          event_to_display.author_nick_name,
-          event_to_display.author_id == current_user.id)
-
-      event_cards_data_arr.push(card_data)
+  def self.query_event_data(current_user_id, only_attending_events, only_author_events, offset, lat, lng, category_id, only_night, only_free, genders_only)
+    data_query = Event
+               .joins('JOIN users ON events.author_id = users.id')
+               .order('dist ASC')
+               .offset(offset)
+               .limit(6)
+               .select('events.id',
+                 'events.name',
+                 'events.is_free',
+                 'events.is_night',
+                 'events.tags',
+                 'events.capacity',
+                 'events.description',
+                 'events.start_date',
+                 'events.start_time',
+                 'users.nick_name as author_nick',
+                 'events.author_id',
+                 "(SELECT count(*) FROM event_attendances ea WHERE ea.event_id = events.id AND ea.user_id = #{current_user_id}) as is_attending",
+                 "ST_DistanceSphere(ST_POINT(events.latitude, events.longitude)::geometry,ST_POINT(#{lat}, #{lng})::geometry) as dist",
+                 '(SELECT count(*) FROM event_attendances WHERE events.id = event_attendances.event_id) as attendance')
+    if genders_only.to_i != -1
+      data_query =
+          data_query
+              .where('(SELECT count(*) FROM events_gender_filters egf WHERE events.id = egf.event_id) = 1')
+              .where('(SELECT count(*) FROM events_gender_filters egf WHERE events.id = egf.event_id AND egf.gender_id = ?) = 1', genders_only)
     end
-
-    return event_cards_data_arr
-  end
-
-  def self.query_event_card_data(page_id, page_items_count, current_user, attending_events, user_events, search_name_pattern)
-    event_data_query =
-        Event
-            .left_joins(:events_gender_filters)
-            .joins("JOIN users ON users.id = events.author_id")
-            .where("events.is_filter = FALSE OR events_gender_filters.gender_id = #{current_user.gender_id}")
-            .order('events.created_at DESC, events.name ASC')
-            .offset(page_items_count * (page_id - 1))
-            .limit(page_items_count)
-            .select(
-                'events.id as event_id',
-                'events.name as event_name',
-                'events.description',
-                'events.author_id',
-                'users.nick_name as author_nick_name',
-                'events.created_at as event_created_at')
-
-    if user_events
-      event_data_query = event_data_query
-          .where("events.author_id = #{current_user.id}")
-    elsif attending_events
-      event_data_query = event_data_query
-          .left_joins(:event_attendances)
-          .where("event_attendances.user_id = #{current_user.id}")
+    if category_id.to_i != -1 then data_query = data_query.where 'events.category_id = ?', category_id end
+    if only_night.eql? 'true' then data_query = data_query.where 'events.is_night = ?', true end
+    if only_free.eql? 'true' then data_query = data_query.where 'events.is_free = ?', true end
+    if only_attending_events
+      data_query = data_query
+                       .left_joins(:event_attendances)
+                       .where('event_attendances.user_id = ?', current_user_id)
+    elsif only_author_events
+      data_query = data_query.where('events.author_id = ?', current_user_id)
     end
-
-    unless search_name_pattern.blank?
-      event_data_query = event_data_query.where("events.name LIKE ?", search_name_pattern)
-    end
-
-    where_cond = "0=1"
-    event_data_query.each_with_index do |data, id|
-      where_cond = where_cond + ' OR '
-      where_cond = where_cond + "events.name = '#{data.event_name}'"
-    end
-
-    attendances = Event
-        .left_joins(:event_attendances)
-        .where(where_cond)
-        .group('events.id')
-        .order('events.created_at DESC, events.name ASC')
-        .select('COUNT(*) FILTER (WHERE event_attendances.id IS NOT NULL) as attendance').to_a
-
-    result = []
-    event_data_query.each_with_index do |data, id|
-      item = OpenStruct.new(data.attributes)
-      # this condition is only because there are repeating events
-      # and that causes this array be less than the event_data_query array
-      # The reason is that the data generation generates repeating gender filters.
-      # In real situation it can't happen.
-      if attendances[id] == nil
-        item.attendance = attendances[0].attendance
-      else
-        item.attendance = attendances[id].attendance
-      end
-
-      result.push(item)
-    end
-
-    return result
+    return data_query
   end
 end

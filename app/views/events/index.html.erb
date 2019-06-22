@@ -6,17 +6,17 @@
         <div class="row">
           <div class="col">
             <%= label_tag 'Show only free events' %>
-            <%= check_box_tag :is_free %>
+            <%= check_box_tag :only_free %>
           </div>
           <div class="col">
             <%= label_tag 'Show only night events' %>
-            <%= check_box_tag :is_night%>
+            <%= check_box_tag :only_night%>
           </div>
         </div>
       </div>
 
       <div class="form-group">
-        <%= label_tag 'Show only genders' %>
+        <%= label_tag 'Show events only for genders' %>
         <%= select_tag :genders_only, options_for_select(@genders_arr), class: 'form-control' %>
       </div>
 
@@ -87,8 +87,8 @@
   function getFilterParams()
   {
       var temp = [];
-      temp.push({name: '<%= :is_free %>', val: $('#<%= :is_free %>').is(':checked')});
-      temp.push({name: '<%= :is_night %>', val: $('#<%= :is_night %>').is(':checked')});
+      temp.push({name: '<%= :only_free %>', val: $('#<%= :only_free %>').is(':checked')});
+      temp.push({name: '<%= :only_night %>', val: $('#<%= :only_night %>').is(':checked')});
       temp.push({name: '<%= :genders_only %>', val: $('#<%= :genders_only %>').val()});
       temp.push({name: '<%= :category %>', val: $('#<%= :category %>').val()});
 
@@ -127,10 +127,10 @@
               eventShowHref = eventShowHref.replace('/event_id', '/' + item.id);
               var eventEditHref = '<%= request.base_url + edit_event_path('event_id') %>';
               eventEditHref = eventEditHref.replace('/event_id', '/' + item.id);
-              console.log(item);
               getEventCardNode(
                   eventShowHref,
                   eventEditHref,
+                  item.is_attending,
                   item.is_free,
                   item.is_night,
                   item.name,
@@ -138,7 +138,7 @@
                   item.author_nick,
                   item.description,
                   item.time_to_event_text,
-                  false,
+                  item.is_author_event,
                   item.capacity === '' ? null : item.capacity,
                   item.tags,
                   item.is_popular).appendTo(document.getElementById('closestEvents'));

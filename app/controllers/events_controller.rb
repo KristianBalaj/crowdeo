@@ -20,16 +20,6 @@ class EventsController < ApplicationController
       go_to_login
       return
     end
-
-    DateTime
-    page_items_count = 20
-    all_my_events = Event.where(author_id: current_user.id)
-    @event_cards_data_arr = []
-
-    @pagination =
-        Pagination.new((all_my_events.count / page_items_count.to_f).ceil, params[:page].to_i, 3, method(:my_events_path))
-
-    @event_cards_data_arr = Event.get_users_event_cards_data(@pagination.current_page, page_items_count, current_user)
   end
 
   def attending_events_index
@@ -37,16 +27,6 @@ class EventsController < ApplicationController
       go_to_login
       return
     end
-
-    page_items_count = 5
-
-    all_attending_events =
-        Event.joins("JOIN event_attendances ea ON ea.event_id = events.id AND ea.user_id = #{current_user.id}")
-
-    @pagination =
-        Pagination.new((all_attending_events.count / page_items_count.to_f).ceil, params[:page].to_i, 3, method(:attending_events_path))
-
-    @event_cards_data_arr = Event.get_attending_event_cards_data(@pagination.current_page, page_items_count, current_user)
   end
 
   def new
@@ -174,40 +154,25 @@ class EventsController < ApplicationController
   end
 
   def closest_events
-    closest_events_sql = "
-      SELECT
-       events.id,
-       events.name,
-       events.is_free,
-       events.is_night,
-       events.tags,
-       events.capacity,
-       events.description,
-       events.start_date,
-       events.start_time,
-       users.nick_name as author_nick,
-       ST_DistanceSphere(ST_POINT(events.latitude, events.longitude)::geometry,ST_POINT(#{params[:lat]}, #{params[:lng]})::geometry) as dist,
-       (SELECT count(*)
-         FROM event_attendances
-         WHERE events.id = event_attendances.event_id) as attendance
-      FROM events
-      JOIN users ON events.author_id = users.id
-      ORDER BY dist ASC
-      OFFSET #{params[:offset]}
-      LIMIT 6;"
-
-    puts params[:is_free]
-    puts params[:is_night]
-    puts params[:genders_only]
-    puts params[:category]
-
-    result = Event.find_by_sql(closest_events_sql).as_json
+    result = Event.query_event_data(
+        current_user.id,
+        false,
+        false,
+        params[:offset],
+        params[:lat],
+        params[:lng],
+        params[:category],
+        params[:only_night],
+        params[:only_free],
+        params[:genders_only]).as_json
     result.each do |item|
+      author_id = item.delete "author_id"
       start_date = item.delete "start_date"
       start_time = item.delete "start_time"
-      time_to_event = get_created_ago_text(get_full_dateTime start_date, start_time)
-      item[:time_to_event_text] = time_to_event
+      item[:time_to_event_text] = get_created_ago_text(get_full_dateTime start_date, start_time)
       item[:is_popular] = if rand < 0.5 then true else false end
+      item[:is_author_event] = current_user.id == author_id
+      item['is_attending'] = item['is_attending'] == 1
     end
 
     render :json => result.to_json
