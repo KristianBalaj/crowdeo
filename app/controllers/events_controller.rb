@@ -8,17 +8,10 @@ class EventsController < ApplicationController
       go_to_login
       return
     end
-
-    @event_cards_data_arr = []
-
-    page_items_count = 20
-    events_count = Event.count
-
-    #check if parameter is an integer
-    @pagination =
-        Pagination.new((events_count / page_items_count.to_f).ceil, params[:page].to_i, 3, method(:all_events_path))
-
-    @event_cards_data_arr = Event.get_all_event_cards_data(@pagination.current_page, page_items_count, current_user, '')
+    @categories_arr = Category.all.map {|c| [c.name, c.id]}
+    @categories_arr = @categories_arr.unshift ['All', -1]
+    @genders_arr = Gender.all.map {|g| [g.gender_tag.capitalize, g.id]}
+    @genders_arr = @genders_arr.unshift ['All', -1]
   end
 
   # This loads only the events created by current user
@@ -28,7 +21,7 @@ class EventsController < ApplicationController
       return
     end
 
-
+    DateTime
     page_items_count = 20
     all_my_events = Event.where(author_id: current_user.id)
     @event_cards_data_arr = []
@@ -57,7 +50,12 @@ class EventsController < ApplicationController
   end
 
   def new
+    unless logged_in?
+      go_to_login
+      return
+    end
     @event = Event.new
+    @categories_arr = Category.all.map {|c| [c.name, c.id]}
   end
 
   def create
@@ -126,7 +124,7 @@ class EventsController < ApplicationController
 
   def show
     @event = Event.find(params[:id])
-    @attending = EventAttendance.where(user_id: current_user.id, event_id: @event.id).exists?
+    @is_attending = EventAttendance.where(user_id: current_user.id, event_id: @event.id).exists?
     @author_nick = User.find_by(id: @event.author_id).nick_name
     @is_my_event = @event.author_id == current_user.id
   end
@@ -180,22 +178,36 @@ class EventsController < ApplicationController
       SELECT
        events.id,
        events.name,
+       events.is_free,
+       events.is_night,
+       events.tags,
+       events.capacity,
        events.description,
-       events.created_at,
+       events.start_date,
+       events.start_time,
        users.nick_name as author_nick,
-       st_distance_sphere(ST_POINT(events.latitude, events.longitude)::geometry,ST_POINT(#{params[:lat]}, #{params[:lng]})::geometry) as dist,
+       ST_DistanceSphere(ST_POINT(events.latitude, events.longitude)::geometry,ST_POINT(#{params[:lat]}, #{params[:lng]})::geometry) as dist,
        (SELECT count(*)
          FROM event_attendances
          WHERE events.id = event_attendances.event_id) as attendance
       FROM events
       JOIN users ON events.author_id = users.id
       ORDER BY dist ASC
-      LIMIT 3;"
+      OFFSET #{params[:offset]}
+      LIMIT 6;"
+
+    puts params[:is_free]
+    puts params[:is_night]
+    puts params[:genders_only]
+    puts params[:category]
 
     result = Event.find_by_sql(closest_events_sql).as_json
     result.each do |item|
-      created_at = item.delete "created_at"
-      item[:created_time_ago] = get_created_ago_text created_at
+      start_date = item.delete "start_date"
+      start_time = item.delete "start_time"
+      time_to_event = get_created_ago_text(get_full_dateTime start_date, start_time)
+      item[:time_to_event_text] = time_to_event
+      item[:is_popular] = if rand < 0.5 then true else false end
     end
 
     render :json => result.to_json
@@ -211,7 +223,12 @@ class EventsController < ApplicationController
         :end_date,
         :capacity,
         :is_filter,
-        :from_birth_date)
+        :from_birth_date,
+        :start_time,
+        :end_time,
+        :is_free,
+        :is_night,
+        :tags)
   end
 
   def go_to_login

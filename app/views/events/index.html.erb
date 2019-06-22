@@ -1,11 +1,32 @@
-<section class="jumbotron text-center">
+<section class="jumbotron jumbotron-fluid">
   <div class="container">
-    <h1 class="jumbotron-heading">All events</h1>
-    <p>
-      <%= link_to "Create new event", newevent_path, class: "btn btn-primary my-2" %>
-      <%= link_to "Attending events", attending_events_path, class: "btn btn-primary my-2" %>
-      <%= link_to "Show my events", my_events_path, class: "btn btn-primary my-2" %>
-    </p>
+    <%= form_tag '', id: 'submitFilters' do %>
+
+      <div class="form-group">
+        <div class="row">
+          <div class="col">
+            <%= label_tag 'Show only free events' %>
+            <%= check_box_tag :is_free %>
+          </div>
+          <div class="col">
+            <%= label_tag 'Show only night events' %>
+            <%= check_box_tag :is_night%>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <%= label_tag 'Show only genders' %>
+        <%= select_tag :genders_only, options_for_select(@genders_arr), class: 'form-control' %>
+      </div>
+
+      <div class="form-group">
+        <%= label_tag 'Show category' %>
+        <%= select_tag :category, options_for_select(@categories_arr, -1), class: 'form-control' %>
+      </div>
+
+      <%= submit_tag "Apply filters", class: 'btn btn-secondary' %>
+    <% end %>
   </div>
 </section>
 
@@ -24,14 +45,68 @@
       Load more
     </a>
   </div>
-
-  <h3>Other events</h3>
-  <%= render 'shared/pagination' %>
-  <%= render 'events/partials/event_cards' %>
 </div>
+
+
+<!--<div class="container">-->
+<!--  <div class="col-md-4">-->
+<!--    <div class="card border-secondary mb-4 shadow-sm">-->
+<!--      <div class="card-header text-center">-->
+<!--        Popular-->
+<!--      </div>-->
+<!--      <div class="card-body" style="padding-top: .75rem">-->
+<!--        <div>-->
+<!--          <span class="badge badge-warning">Paid</span><span> </span><span class="badge badge-dark">Night event</span>-->
+<!--        </div>-->
+<!--        <h5 class="card-title" style="font-weight: 600 !important">EventName</h5>-->
+<!--        <h6 class="card-subtitle mb-2">Starts in 1 min</h6>-->
+<!--        <h6 class="card-subtitle mb-2 text-muted">Organizer: nick1</h6>-->
+<!--        <h6 class="card-subtitle mb-2 text-muted">Total attendance: 0</h6>-->
+<!--        <h6 class="mb-2 text-muted">Capacity filled by:</h6>-->
+<!--        <div class="progress">-->
+<!--          <div class="progress-bar progress-bar-striped" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>-->
+<!--        </div>-->
+<!--        <p class="card-text">Description: sdfjdfsfd.</p>-->
+<!--        <div class="d-flex justify-content-between align-items-center">-->
+<!--          <div class="btn-group">-->
+<!--            <a class="btn btn-sm btn-outline-primary" href="http://localhost:3000/events/show/7">View</a>-->
+<!--            <a display="none" class="btn btn-sm btn-outline-primary" href="http://localhost:3000/events/7/edit">Edit</a>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="card-footer text-muted">-->
+<!--        <small>#smth #fhdj #idfi</small>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->
 
 <script>
   var eventsLoadedCount = 0;
+
+  function getFilterParams()
+  {
+      var temp = [];
+      temp.push({name: '<%= :is_free %>', val: $('#<%= :is_free %>').is(':checked')});
+      temp.push({name: '<%= :is_night %>', val: $('#<%= :is_night %>').is(':checked')});
+      temp.push({name: '<%= :genders_only %>', val: $('#<%= :genders_only %>').val()});
+      temp.push({name: '<%= :category %>', val: $('#<%= :category %>').val()});
+
+      extra_params = '?';
+      temp.forEach(function(item, id)
+      {
+          extra_params = extra_params + item.name + '=' + item.val;
+          extra_params = extra_params + '&';
+      });
+      return extra_params;
+  }
+
+  $('#submitFilters').submit(function(e)
+  {
+      removeAllEvents();
+      loadEvents(getFilterParams());
+      return false;
+  });
 
   function removeAllEvents()
   {
@@ -39,9 +114,10 @@
       while (myNode.firstChild) {
           myNode.removeChild(myNode.firstChild);
       }
+      eventsLoadedCount = 0;
   }
 
-  function loadEvents()
+  function loadEvents(extra_params)
   {
       var onEventsReceived = function(events)
       {
@@ -51,15 +127,21 @@
               eventShowHref = eventShowHref.replace('/event_id', '/' + item.id);
               var eventEditHref = '<%= request.base_url + edit_event_path('event_id') %>';
               eventEditHref = eventEditHref.replace('/event_id', '/' + item.id);
+              console.log(item);
               getEventCardNode(
                   eventShowHref,
                   eventEditHref,
+                  item.is_free,
+                  item.is_night,
                   item.name,
                   item.attendance,
                   item.author_nick,
                   item.description,
-                  item.created_time_ago,
-                  false).appendTo(document.getElementById('closestEvents'));
+                  item.time_to_event_text,
+                  false,
+                  item.capacity === '' ? null : item.capacity,
+                  item.tags,
+                  item.is_popular).appendTo(document.getElementById('closestEvents'));
           });
           eventsLoadedCount += events.length;
       };
@@ -70,7 +152,7 @@
       };
 
       setLoadingButton(true);
-      getCloseEvents(onEventsReceived, onFail);
+      getCloseEvents(extra_params, onEventsReceived, onFail);
   }
 
   function setLoadingButton(isLoading)
@@ -100,11 +182,12 @@
       }
   }
 
-  function getCloseEvents(onEventsReceived, onFail)
+  function getCloseEvents(extra_parameters, onEventsReceived, onFail)
   {
       getLocation(function(lat, lng) {
               document.getElementById('locationDisabled').style.display = 'none';
               request = new XMLHttpRequest();
+
               request.onload = function () {
                   var eventsResult = JSON.parse(request.response);
                   onEventsReceived(eventsResult);
@@ -113,6 +196,7 @@
               url = url.replace('/1000', '/' + lat);
               url = url.replace('/1001', '/' + lng);
               url = url.replace('/1002', '/' + eventsLoadedCount);
+              url = url + extra_parameters;
               request.open('GET', url);
               request.send();
           },
@@ -121,11 +205,11 @@
 
   $('document').ready(function ()
   {
-      loadEvents();
+      loadEvents(getFilterParams());
   });
 
   $('#loadMore').click(function()
   {
-      loadEvents();
+      loadEvents(getFilterParams());
   });
 </script>

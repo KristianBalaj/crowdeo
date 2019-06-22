@@ -2,38 +2,114 @@
 
 <div class="container">
 
-  <div class="center">
-    <h1>Create event</h1>
-  </div>
+  <div class="row justify-content-center">
+    <div class="col-9">
+      <h1>Create event</h1>
 
-  <div class="row">
-    <div class="col-md-6 col-md-offset-3">
       <%= form_for(@event, url: newevent_path, html: { id: 'newEventForm' }) do |f| %>
 
         <%= render 'shared/error_messages', errors: @event.errors %>
 
-        <%= f.label :name %>
-        <%= f.text_field :name, class: 'form-control' %>
+        <div class="form-group">
+          <%= f.label :name %>
+          <%= f.text_field :name, class: 'form-control' %>
+        </div>
 
-        <%= f.label :description %>
-        <%= f.text_area :description, class: 'form-control' %>
+        <div class="form-group">
+          <%= f.label :description %>
+          <%= f.text_area :description, class: 'form-control' %>
+        </div>
 
-        <%= f.label :start_date %>
-        <%= f.date_field :start_date, class: 'form-control' %>
+        <div class="form-group">
+          <%= f.label :tags %>
+          <%= f.text_field :tags, class: 'form-control' %>
+        </div>
 
-        <%= f.label :end_date %>
-        <%= f.date_field :end_date, class: 'form-control' %>
+        <div class="form-group">
+          <%= f.label 'Category' %>
+          <%= f.select :category_id, options_for_select(@categories_arr), {}, {class: 'form-control'} %>
+        </div>
 
-        <div id="mapid"></div>
+        <div class="form-group">
+          <div class="row">
+            <div class="col">
+              <%= f.label :start_date %>
+            </div>
+            <div class="col">
+              <%= f.label :end_date %>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <%= f.date_field :end_date, class: 'form-control', id: 'end_date_field' %>
+            </div>
+            <div class="col">
+              <%= f.date_field :start_date, class: 'form-control', id: 'start_date_field' %>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="row">
+            <div class="col">
+              <%= f.label :start_time %>
+            </div>
+            <div class="col">
+              <%= f.label :end_time %>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col clockpicker">
+              <%= f.text_field :start_time, class: 'form-control', placeholder: 'Now', id: 'start_time_field' %>
+              <span class="input-group-addon">
+                <span class="glyphicon glyphicon-time"></span>
+              </span>
+            </div>
+            <div class="col clockpicker">
+              <%= f.text_field :end_time, class: 'form-control', placeholder: 'Now', id: 'end_time_field' %>
+              <span class="input-group-addon">
+                <span class="glyphicon glyphicon-time"></span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="form-group">
+          <%= f.label 'Event length' %>
+          <input id="eventLength" class="form-control" type="text" placeholder="Readonly input here…" readonly>
+        </div>
+
+        <div class="form-group">
+          <%= f.label 'Pick a location' %>
+          <div id="mapid"></div>
+        </div>
 
         <%= f.text_field :lat, { id: 'latField', type: 'hidden', value: 'x'} %>
         <%= f.text_field :lng, { id: 'lngField', type: 'hidden', value: 'x'} %>
 
-        <%= f.label :capacity %>
-        <%= f.text_field :capacity, class: 'form-control' %>
+        <div class="form-group">
+          <%= f.label :capacity %>
+          <%= f.text_field :capacity, class: 'form-control' %>
+        </div>
 
-        <%= f.label :is_filter %>
-        <%= f.check_box :is_filter, class: 'form-control', id: 'toggler' %>
+        <div class="form-group">
+          <div class="row">
+            <div class="col">
+              <%= f.label 'Free entry' %>
+              <%= f.check_box :is_free %>
+            </div>
+            <div class="col">
+              <%= f.label 'Night event' %>
+              <%= f.check_box :is_night %>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <%= f.label 'Setup filter for attendees' %>
+          <%= f.check_box :is_filter, id: 'toggler' %>
+        </div>
 
         <div id="toggle" style="display: none;">
           <%= f.label :from_birth_date %>
@@ -44,16 +120,12 @@
           <%= check_box_tag "permit_gender[]", 0, { checked: true } %>
           <%= label_tag "Female" %>
           <%= check_box_tag "permit_gender[]", 1, { checked: true } %>
-
         </div>
 
-        <p><%=  %></p>
-
-        <%= f.submit "Create event", class: "btn btn-primary" %>
+        <%= f.submit "Create event", class: "btn btn-primary btn-lg btn-block" %>
       <% end %>
     </div>
   </div>
-
 </div>
 
 <!--<script>-->
@@ -70,10 +142,82 @@
 <!--</script>-->
 
 <script>
+  $('.clockpicker').clockpicker({
+      donetext: 'Done'
+  });
 
   var popup = L.popup();
   var eventPosMarker = null;
   var mymap = null;
+
+  var startDateField = $('#start_date_field');
+  var startTimeField = $('#start_time_field');
+  var endDateField = $('#end_date_field');
+  var endTimeField = $('#end_time_field');
+
+  function isTimeHourMonth(timeString)
+  {
+      return /[0-9][0-9]:[0-9][0-9]/.test(timeString);
+  }
+
+  function getDateTime(dateField, timeField)
+  {
+      var dateTime = new Date(dateField.val());
+      dateTime.setHours(timeField.val().split(':')[0]);
+      dateTime.setMinutes(timeField.val().split(':')[1]);
+      return dateTime;
+  }
+
+  /**
+   * Returns array [days, hours, minutes]
+   */
+  function getTimeDiff(time1, time2)
+  {
+      var diff = time2 - time1;
+      days = Math.floor(diff / 86400000);
+      diff = diff % 86400000;
+      hours = Math.floor(diff / 3600000);
+      diff = diff % 3600000;
+      minutes = Math.floor(diff / 60000);
+      diff = diff % 60000;
+      return [days, hours, minutes];
+  }
+
+  function setEventLengthField()
+  {
+      if(isTimeHourMonth(startTimeField.val()) && isTimeHourMonth(endTimeField.val()))
+      {
+          if(startDateField.val() !== '' && endDateField.val())
+          {
+              var start = getDateTime(startDateField, startTimeField);
+              var end = getDateTime(endDateField, endTimeField);
+
+              var res = getTimeDiff(start, end);
+
+              $('#eventLength').attr('placeholder', res[0] + ' Days, ' + res[1] + ' Hours, ' + res[2] + ' Minutes');
+          }
+      }
+  }
+
+  startDateField.on('input', function()
+  {
+      setEventLengthField();
+  });
+
+  startTimeField.on('change input', function()
+  {
+      setEventLengthField();
+  });
+
+  endDateField.on('input', function(){
+      setEventLengthField();
+  });
+
+  endTimeField.on('change input', function()
+  {
+      setEventLengthField();
+  });
+
 
   function addEventPosMarker(lat, lng)
   {
@@ -98,9 +242,6 @@
       var lat = "<%= if params[:event] != nil and params[:event][:lat] != nil then params[:event][:lat] else 'x' end %>";
       var lng = "<%= if params[:event] != nil and params[:event][:lng] != nil then params[:event][:lng] else 'x' end %>";
 
-      console.log(lat);
-      console.log(lng);
-
       if(!(lat === 'x' || lng === 'x'))
       {
           mymap = addMap('mapid', [lat, lng]);
@@ -119,12 +260,11 @@
               mymap.on('click', onMapClick);
           };
 
-          getLocation(false, onLocationGet, onLocationGetFailed);
+          getLocation(onLocationGet, onLocationGetFailed);
       }
   });
 
   $('#newEventForm').submit(function(){
-
       $('#latField').val(eventPosMarker === null ? "x" : eventPosMarker.getLatLng().lat);
       $('#lngField').val(eventPosMarker === null ? "x" : eventPosMarker.getLatLng().lng);
   });

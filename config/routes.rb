@@ -14,14 +14,14 @@ Rails.application.routes.draw do
   post '/login', to: 'sessions#create'
   delete '/logout', to: 'sessions#destroy'
 
-  get '/events/all(/:page)', to: 'events#index', :defaults => { :page => '1'}, as: 'all_events'
-  get '/events/my(/:page)', to: 'events#my_events_index', :defaults => { :page => '1' }, as: 'my_events'
-  get '/events/attending(/:page)', to: 'events#attending_events_index', :defaults => { :page => '1' }, as: 'attending_events'
+  get '/events/all', to: 'events#index', as: 'all_events'
+  get '/events/my', to: 'events#my_events_index', as: 'my_events'
+  get '/events/attending', to: 'events#attending_events_index', as: 'attending_events'
   get '/events/show/:id', to: 'events#show', as: 'event_show'
   get '/events/:id/edit', to: 'events#edit', as: 'edit_event'
   get '/newevent', to: 'events#new'
   get '/events/search', to: 'events#search'
-  get '/events/closest/:lat/:lng/:offset', to: 'events#closest_events', as: 'closest_events', constraints: { lat: float_regex, lng: float_regex}
+  get '/events/closest/:lat/:lng/:offset/(:other)', to: 'events#closest_events', as: 'closest_events', constraints: { lat: float_regex, lng: float_regex}
   patch '/events/:id', to: 'events#update', as: 'update_event'
   delete '/events/:id', to: 'events#delete', as: 'delete_event'
   post '/newevent', to: 'events#create'

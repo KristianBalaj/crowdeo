@@ -11,6 +11,19 @@
 # User.destroy_all
 # Event.destroy_all
 # Gender.destroy_all
+def get_categories_names
+  search_html = open('https://www.meetup.com/find/').read
+  doc = Nokogiri::HTML(search_html)
+
+  categories = doc.css('ul#simple-criteria > li > ul > li')
+  result = []
+  categories.each_with_index do |category, id|
+    if id > 1
+      result.push category.text.delete!("\n").strip
+    end
+  end
+  return result
+end
 
 puts 'Seeding DB'
 
@@ -20,6 +33,13 @@ genders_to_add = [{ id: 0, gender_tag: "male" }, { id: 1, gender_tag: "female" }
 genders_to_add.each do |g|
   unless Gender.find_by(id: g[:id])
     Gender.create(g)
+  end
+end
+
+puts 'Creating missing categories'
+get_categories_names.each_with_index do |category_name, id|
+  unless Category.find_by(id: id)
+    Category.create({id: id, name: category_name})
   end
 end
 

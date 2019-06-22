@@ -1,13 +1,10 @@
 <% provide(:title, 'Sign up') %>
 
 <div class="container">
+  <div class="row justify-content-center">
+    <div class="col-9">
+      <h1>Sign up</h1>
 
-  <div class="center">
-    <h1>Sign up</h1>
-  </div>
-
-  <div class="row">
-    <div class="col-md-6 col-md-offset-3">
       <%= form_for(@user, url: signup_path) do |f| %>
 
         <%= render 'shared/error_messages', errors: @user.errors %>
@@ -19,8 +16,10 @@
         <%= f.email_field :email, class: 'form-control' %>
 
         <%= f.label :birth_date %>
-        <small>(This is gonna be used for accurate event filtering.)</small>
         <%= f.date_field :birth_date, class: 'form-control' %>
+        <small id="passwordHelpBlock" class="form-text text-muted">
+          This is gonna be used for accurate event filtering.
+        </small>
 
         <%= f.label :password %>
         <%= f.password_field :password, class: 'form-control' %>
@@ -28,16 +27,16 @@
         <%= f.label :password_confirmation, "Confirmation" %>
         <%= f.password_field :password_confirmation, class: 'form-control' %>
 
-        <%= f.label :gender, 'Male', value: 'male' %>
-        <%= f.radio_button :gender_id, '0', { class: 'form-control', checked: true } %>
-        <%= f.label :gender, 'Female', value: 'female' %>
-        <%= f.radio_button :gender_id, '1', class: 'form-control' %>
+        <div class="form-check">
+          <%= f.radio_button :gender_id, '0', { class: 'form-check-input', checked: true } %>
+          <%= f.label :gender, 'Male', class: 'form-check-label', value: 'male' %>
+        </div>
+        <div class="form-check">
+          <%= f.radio_button :gender_id, '1', class: 'form-check-input' %>
+          <%= f.label :gender, 'Female', class: 'form-check-label', value: 'female' %>
+        </div>
 
-        <%= f.label :calendar_sync %>
-        <small>(Do you want to add all attending events to your calendar?)</small>
-        <%= f.check_box :calendar_sync, class: 'form-control', id: 'customSwitch1' %>
-
-        <%= f.submit "Create my account", class: "btn btn-primary" %>
+        <%= f.submit "Create my account", class: "btn btn-primary btn-lg btn-block" %>
       <% end %>
     </div>
   </div>

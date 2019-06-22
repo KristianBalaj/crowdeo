@@ -1,30 +1,35 @@
-<div class="jumbotron">
-  <div class="container">
-    <h1><%= @event.name %></h1>
-    <p><small>Organizer: <%= @author_nick %></small></p>
-    <p><%= @event.description %></p>
-
-    <div id="mapid"></div>
-
-    <p>
-      <% if @attending %>
+<div class="container">
+  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h2><%= @event.name %></h2>
+    <div class="btn-toolbar mb-2 mb-md-0">
+      <% if @is_attending %>
         <%= link_to "Unattend", event_unattend_path(@event.id), method: :put, class: "btn btn-primary btn-lg" %>
       <% else %>
         <%= link_to "Attend", event_attend_path(@event.id), method: :put, class: "btn btn-primary btn-lg" %>
       <% end %>
-    </p>
-
-    <% if @is_my_event %>
-      <p>
-        <%= link_to "Delete event", delete_event_path(@event), method: :delete, class: "btn btn-primary btn-lg" %>
-      </p>
-    <% end %>
-
+    </div>
   </div>
+  <p>Organizer: <%= @author_nick %></p>
+  <p>Start: <%= get_full_dateTime @event.start_date, @event.start_time %></p>
+  <p>End: <%= get_full_dateTime @event.end_date, @event.end_time %></p>
+  <p>Full description: <%= @event.description %></p>
+  <p><%= @event.tags %></p>
 
-  <%= link_to "Back", all_events_path, class: "btn btn-primary btn-lg" %>
+  <div id="mapid"></div>
+
+  <% if @is_my_event %>
+    <%= link_to "Delete event", delete_event_path(@event), method: :delete, class: "btn btn-primary btn-lg btn-block" %>
+  <% end %>
 
 </div>
+
+<!--<div class="jumbotron">-->
+<!--  <div class="container">-->
+
+
+  <%#= link_to "Back", all_events_path, class: "btn btn-primary btn-lg" %>
+
+<!--</div>-->
 
 <script>
   var lat = <%= @event.latitude %>;

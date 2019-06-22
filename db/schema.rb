@@ -10,11 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_12_095058) do
+ActiveRecord::Schema.define(version: 2019_06_22_120305) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "postgis"
+
+  create_table "categories", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "event_attendances", force: :cascade do |t|
     t.integer "user_id"
@@ -33,13 +39,17 @@ ActiveRecord::Schema.define(version: 2019_05_12_095058) do
     t.integer "capacity"
     t.boolean "is_filter"
     t.date "from_birth_date"
-    t.string "location_name"
-    t.string "location_description"
     t.integer "author_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.float "latitude"
     t.float "longitude"
+    t.time "start_time"
+    t.time "end_time"
+    t.text "tags"
+    t.boolean "is_free"
+    t.boolean "is_night"
+    t.integer "category_id"
     t.index ["author_id"], name: "index_events_on_author_id"
     t.index ["created_at", "name"], name: "index_events_on_created_at_and_name", order: { created_at: :desc }
     t.index ["name"], name: "index_events_on_name"
@@ -63,7 +73,6 @@ ActiveRecord::Schema.define(version: 2019_05_12_095058) do
     t.string "nick_name"
     t.date "birth_date"
     t.string "email"
-    t.boolean "calendar_sync"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "password_digest"
@@ -72,6 +81,7 @@ ActiveRecord::Schema.define(version: 2019_05_12_095058) do
 
   add_foreign_key "event_attendances", "events"
   add_foreign_key "event_attendances", "users"
+  add_foreign_key "events", "categories"
   add_foreign_key "events", "users", column: "author_id"
   add_foreign_key "events_gender_filters", "events"
   add_foreign_key "events_gender_filters", "genders"
