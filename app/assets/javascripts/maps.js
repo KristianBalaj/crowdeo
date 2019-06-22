@@ -22,7 +22,7 @@ function getLocation(onSuccess, onFail)
         if(request.status >= 200 && request.status < 300)
         {
             var location = JSON.parse(request.response);
-            onSuccess(location.lat, location.lon);
+            onSuccess(location.latitude, location.longitude);
         }
         else
         {
@@ -30,6 +30,6 @@ function getLocation(onSuccess, onFail)
         }
     };
 
-    request.open('GET', 'http://ip-api.com/json');
+    request.open('GET', 'https://ipapi.co/json');
     request.send();
 }
