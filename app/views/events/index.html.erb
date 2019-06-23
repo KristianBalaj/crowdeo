@@ -163,28 +163,15 @@
   {
       var onEventsReceived = function(events)
       {
-          setLoadingButton(false);
-          events.forEach(function (item, id) {
-              var eventShowHref = '<%= request.base_url + event_show_path('event_id') %>';
-              eventShowHref = eventShowHref.replace('/event_id', '/' + item.id);
-              var eventEditHref = '<%= request.base_url + edit_event_path('event_id') %>';
-              eventEditHref = eventEditHref.replace('/event_id', '/' + item.id);
-              getEventCardNode(
-                  eventShowHref,
-                  eventEditHref,
-                  item.is_attending,
-                  item.is_free,
-                  item.is_night,
-                  item.name,
-                  item.attendance,
-                  item.author_nick,
-                  item.description,
-                  item.time_to_event_text,
-                  item.is_author_event,
-                  item.capacity === '' ? null : item.capacity,
-                  item.tags,
-                  item.is_popular).appendTo(document.getElementById('closestEvents'));
-          });
+          setLoadingButton(false, document.getElementById('loadMore'), document.getElementById('spinner'))
+          let cardsParentNode = document.getElementById('closestEvents');
+          let eventShowHrefBase = '<%= request.base_url + event_show_path('event_id') %>';
+          let eventEditHrefBase = '<%= request.base_url + edit_event_path('event_id') %>';
+          addEventCardsToNode(
+              events,
+              cardsParentNode,
+              eventShowHrefBase,
+              eventEditHrefBase);
           eventsLoadedCount += events.length;
       };
 
@@ -193,35 +180,8 @@
           console.log('events loading failed');
       };
 
-      setLoadingButton(true);
+      setLoadingButton(true, document.getElementById('loadMore'), document.getElementById('spinner'));
       getCloseEvents(extra_params, onEventsReceived, onFail);
-  }
-
-  function setLoadingButton(isLoading)
-  {
-      var button = document.getElementById('loadMore');
-      if(isLoading)
-      {
-          if(!button.classList.contains('disabled'))
-          {
-              button.classList.add('disabled');
-          }
-          if(!button.contains(document.getElementById('spinner')))
-          {
-              getSpinnerNode('spinner').appendTo(button);
-          }
-      }
-      else
-      {
-          if(button.classList.contains('disabled'))
-          {
-              button.classList.remove('disabled');
-          }
-          if(button.contains(document.getElementById('spinner')))
-          {
-              button.removeChild(button.lastChild);
-          }
-      }
   }
 
   function getCloseEvents(extra_parameters, onEventsReceived, onFail)
@@ -231,13 +191,13 @@
           request = new XMLHttpRequest();
 
           request.onload = function () {
-              var eventsResult = JSON.parse(request.response);
+              let eventsResult = JSON.parse(request.response);
               onEventsReceived(eventsResult);
           };
-          url = '<%= request.base_url + url_for(closest_events_path '1000', '1001', '1002', '1003') %>';
+          url = '<%= request.base_url + url_for(closest_events_path '1000', '1001', '-1000', '1003') %>';
           url = url.replace('/1000', '/' + lat);
           url = url.replace('/1001', '/' + lng);
-          url = url.replace('/1002', '/' + eventsLoadedCount);
+          url = url.replace('/-1000', '/' + eventsLoadedCount);
           url = url.replace('/1003', '/' + radius);
           url = url + extra_parameters;
           request.open('GET', url);

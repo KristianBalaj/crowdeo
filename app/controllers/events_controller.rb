@@ -12,21 +12,6 @@ class EventsController < ApplicationController
     @genders_arr = @genders_arr.unshift ['All', -1]
   end
 
-  # This loads only the events created by current user
-  def my_events_index
-    unless logged_in?
-      go_to_login
-      return
-    end
-  end
-
-  def attending_events_index
-    unless logged_in?
-      go_to_login
-      return
-    end
-  end
-
   def new
     unless logged_in?
       go_to_login
@@ -158,11 +143,6 @@ class EventsController < ApplicationController
         :category_id,
         :start_time,
         :end_time)
-  end
-
-  def go_to_login
-    flash[:danger] = "You need to login first."
-    redirect_to login_path
   end
 
 end

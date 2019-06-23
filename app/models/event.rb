@@ -45,7 +45,19 @@ class Event < ApplicationRecord
     return event
   end
 
-  def self.query_event_data(display_option, current_user_id, only_attending_events, only_author_events, offset, lat, lng, radius, category_id, only_night, only_free, genders_only)
+  def self.query_event_data(
+              display_option,
+              current_user_id,
+              only_attending_events,
+              only_author_events,
+              offset,
+              lat = 0,
+              lng = 0,
+              radius = -1,
+              category_id = -1,
+              only_night = 'false',
+              only_free = 'false',
+              genders_only = -1)
     data_query = Event
                .joins('JOIN users ON events.author_id = users.id')
                .offset(offset)
@@ -61,7 +73,7 @@ class Event < ApplicationRecord
                  'users.nick_name as author_nick',
                  'events.author_id',
                  "(SELECT count(*) FROM event_attendances ea WHERE ea.event_id = events.id AND ea.user_id = #{current_user_id}) as is_attending",
-                 "ST_DistanceSphere(ST_POINT(events.latitude, events.longitude)::geometry,ST_POINT(#{lat}, #{lng})::geometry) as dist",
+                 # "ST_DistanceSphere(ST_POINT(events.latitude, events.longitude)::geometry,ST_POINT(#{lat}, #{lng})::geometry) as dist",
                  '(SELECT count(*) FROM event_attendances WHERE events.id = event_attendances.event_id) as attendance')
     if radius.to_i != -1
       data_query =

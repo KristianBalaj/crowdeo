@@ -9,4 +9,9 @@ module ApplicationHelper
     end
   end
 
+  def go_to_login
+    flash[:danger] = "You need to login first."
+    redirect_to login_path
+  end
+
 end

@@ -1,6 +1,7 @@
+float_regex = '[+-]?[0-9]*\.?[0-9]*'
+
 Rails.application.routes.draw do
 
-  float_regex = '[+-]?[0-9]*\.?[0-9]*'
   root 'static_pages#home'
 
   get 'sessions/new'
@@ -15,8 +16,6 @@ Rails.application.routes.draw do
   delete '/logout', to: 'sessions#destroy'
 
   get '/events/all', to: 'events#index', as: 'all_events'
-  get '/events/my', to: 'events#my_events_index', as: 'my_events'
-  get '/events/attending', to: 'events#attending_events_index', as: 'attending_events'
   get '/events/show/:id', to: 'events#show', as: 'event_show'
   get '/events/:id/edit', to: 'events#edit', as: 'edit_event'
   get '/newevent', to: 'events#new'
@@ -30,5 +29,11 @@ Rails.application.routes.draw do
   post '/unattend/:id', to: 'attendances#unattend_event', as: 'unattend_event'
 
   resources :users
-  # resources :events
+
+  get '/created_events/index', to: 'created_events#index', as: 'created_events_index'
+  get '/created_events/:offset', to: 'created_events#created_events', as: 'created_events', constraints: { offset: float_regex }
+
+  get '/attending_events/index', to: 'attending_events#index', as: 'attending_events_index'
+  get '/attending_events/:offset', to: 'attending_events#attending_events', as: 'attending_events', constraints: {offset: float_regex}
+
 end

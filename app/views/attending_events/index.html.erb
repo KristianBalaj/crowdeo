@@ -1,0 +1,66 @@
+<div class="container" style="margin-top: 3rem;">
+  <h3>Attending events</h3>
+  <div class="album py=5 bg-light">
+    <div id="closestEvents" class="row" style="padding: 1.5rem">
+    </div>
+  </div>
+  <div class="row justify-content-center">
+    <a class="btn btn-primary my-2" id="loadMore">
+      Load more
+    </a>
+  </div>
+</div>
+
+<script>
+    var eventsLoadedCount = 0;
+
+    function loadEvents()
+    {
+        let onEventsReceived = function(events)
+        {
+            setLoadingButton(false, document.getElementById('loadMore'), document.getElementById('spinner'))
+            let cardsParentNode = document.getElementById('closestEvents');
+            let eventShowHrefBase = '<%= request.base_url + event_show_path('event_id') %>';
+            let eventEditHrefBase = '<%= request.base_url + edit_event_path('event_id') %>';
+            addEventCardsToNode(
+                events,
+                cardsParentNode,
+                eventShowHrefBase,
+                eventEditHrefBase);
+            eventsLoadedCount += events.length;
+        };
+
+        let onFail = function()
+        {
+            console.log('events loading failed');
+        };
+
+        setLoadingButton(true, document.getElementById('loadMore'), document.getElementById('spinner'));
+        getMyEvents(onEventsReceived, onFail);
+    }
+
+    function getMyEvents(onEventsReceived, onFail)
+    {
+        let request = new XMLHttpRequest();
+        request.onload = function()
+        {
+            console.log(request.response);
+            let eventsResult = JSON.parse(request.response);
+            onEventsReceived(eventsResult);
+        };
+        let url = '<%= request.base_url + url_for(attending_events_path('-1')) %>';
+        url = url.replace('/-1', '/' + eventsLoadedCount);
+        request.open('GET', url);
+        request.send();
+    }
+
+    $('document').ready(function()
+    {
+        loadEvents();
+    });
+
+    $('#loadMore').click(function()
+    {
+        loadEvents();
+    });
+</script>

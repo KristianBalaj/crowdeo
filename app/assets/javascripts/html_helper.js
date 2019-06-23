@@ -1,3 +1,52 @@
+function addEventCardsToNode(eventsData, cardsParentNode, eventShowHrefBase, eventEditHrefBase)
+{
+    eventsData.forEach(function (item, id)
+    {
+        getEventCardNode(
+            eventShowHrefBase.replace('/event_id', '/' + item.id),
+            eventEditHrefBase.replace('/event_id', '/' + item.id),
+            item.is_attending,
+            item.is_free,
+            item.is_night,
+            item.name,
+            item.attendance,
+            item.author_nick,
+            item.description,
+            item.time_to_event_text,
+            item.is_author_event,
+            item.capacity === '' ? null : item.capacity,
+            item.tags,
+            item.is_popular).appendTo(cardsParentNode);
+    });
+}
+
+function setLoadingButton(isLoading, buttonNode, spinnerNode)
+{
+    let button = buttonNode;
+    if(isLoading)
+    {
+        if(!button.classList.contains('disabled'))
+        {
+            button.classList.add('disabled');
+        }
+        if(!button.contains(spinnerNode))
+        {
+            getSpinnerNode('spinner').appendTo(button);
+        }
+    }
+    else
+    {
+        if(button.classList.contains('disabled'))
+        {
+            button.classList.remove('disabled');
+        }
+        if(button.contains(spinnerNode))
+        {
+            button.removeChild(button.lastChild);
+        }
+    }
+}
+
 function getEventCardNode(
     show_event_href,
     edit_event_href,
