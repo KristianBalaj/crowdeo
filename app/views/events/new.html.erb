@@ -197,7 +197,7 @@
               var res = getTimeDiff(start, end);
               $('#eventLength').attr('placeholder', res[0] + ' Days, ' + res[1] + ' Hours, ' + res[2] + ' Minutes');
               $('#start_timestamp').val(start.toISOString());
-              $('#end_timestamp').val(start.toISOString());
+              $('#end_timestamp').val(end.toISOString());
           }
       }
   }
@@ -244,15 +244,6 @@
   $(document).ready(function(){
       var lat = "<%= if params[:event] != nil and params[:event][:lat] != nil then params[:event][:lat] else 'x' end %>";
       var lng = "<%= if params[:event] != nil and params[:event][:lng] != nil then params[:event][:lng] else 'x' end %>";
-
-<!--      var now = new Date();-->
-
-<!--      var day = ("0" + now.getDate()).slice(-2);-->
-<!--      var month = ("0" + (now.getMonth() + 1)).slice(-2);-->
-
-<!--      var today = now.getFullYear()+"-"+(month)+"-"+(day) ;-->
-
-<!--      $('#start_date_field').val("<%= @dates.start_date %>");-->
 
       if(!(lat === 'x' || lng === 'x'))
       {

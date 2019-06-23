@@ -67,43 +67,6 @@ class EventsController < ApplicationController
     end
   end
 
-  def attend_event
-    unless logged_in?
-      go_to_login
-      return
-    end
-    #
-    # todo: check if current user can attend the event
-    #
-    event = Event.find_by(id: params[:id])
-
-    if EventAttendance.create(user_id: current_user.id, event_id: event.id)
-      flash[:success] = "Event attend confirmed."
-      redirect_to event_show_path(event)
-    end
-
-  end
-
-  def unattend_event
-    unless logged_in?
-      go_to_login
-      return
-    end
-
-    event = Event.find_by(id: params[:id])
-    EventAttendance.where(user_id: current_user.id, event_id: event.id).first.destroy
-    flash[:success] = "Event unattend confirmed."
-    redirect_to event_show_path(event)
-  end
-
-  def search
-    @pagination =
-        Pagination.new(1, 1, 3, method(:all_events_path))
-
-    @event_cards_data_arr = Event.get_all_event_cards_data(1, 20, current_user, params[:search][:query])
-    render 'events/index'
-  end
-
   def show
     @event = Event.find(params[:id])
     @is_attending = EventAttendance.where(user_id: current_user.id, event_id: @event.id).exists?
@@ -156,7 +119,6 @@ class EventsController < ApplicationController
   end
 
   def closest_events
-    puts request
     result = Event.query_event_data(
         params[:display_by],
         current_user.id,
@@ -165,6 +127,7 @@ class EventsController < ApplicationController
         params[:offset],
         params[:lat],
         params[:lng],
+        params[:radius],
         params[:category],
         params[:only_night],
         params[:only_free],

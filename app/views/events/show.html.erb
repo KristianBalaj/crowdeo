@@ -3,15 +3,15 @@
     <h2><%= @event.name %></h2>
     <div class="btn-toolbar mb-2 mb-md-0">
       <% if @is_attending %>
-        <%= link_to "Unattend", event_unattend_path(@event.id), method: :put, class: "btn btn-primary btn-lg" %>
+        <%= link_to "Unattend", unattend_event_path(@event.id), method: :post, class: "btn btn-primary btn-lg" %>
       <% else %>
-        <%= link_to "Attend", event_attend_path(@event.id), method: :put, class: "btn btn-primary btn-lg" %>
+        <%= link_to "Attend", attend_event_path(@event.id), method: :post, class: "btn btn-primary btn-lg" %>
       <% end %>
     </div>
   </div>
   <p>Organizer: <%= @author_nick %></p>
   <p>Start: <%= @event.start_time %></p>
-  <p>End: <%= @event.start_time %></p>
+  <p>End: <%= @event.end_time %></p>
   <p>Full description: <%= @event.description %></p>
   <p><%= @event.tags %></p>
 

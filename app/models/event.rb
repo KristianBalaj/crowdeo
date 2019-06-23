@@ -45,7 +45,7 @@ class Event < ApplicationRecord
     return event
   end
 
-  def self.query_event_data(display_option, current_user_id, only_attending_events, only_author_events, offset, lat, lng, category_id, only_night, only_free, genders_only)
+  def self.query_event_data(display_option, current_user_id, only_attending_events, only_author_events, offset, lat, lng, radius, category_id, only_night, only_free, genders_only)
     data_query = Event
                .joins('JOIN users ON events.author_id = users.id')
                .offset(offset)
@@ -63,6 +63,11 @@ class Event < ApplicationRecord
                  "(SELECT count(*) FROM event_attendances ea WHERE ea.event_id = events.id AND ea.user_id = #{current_user_id}) as is_attending",
                  "ST_DistanceSphere(ST_POINT(events.latitude, events.longitude)::geometry,ST_POINT(#{lat}, #{lng})::geometry) as dist",
                  '(SELECT count(*) FROM event_attendances WHERE events.id = event_attendances.event_id) as attendance')
+    if radius.to_i != -1
+      data_query =
+          data_query
+              .joins("JOIN ST_BUFFER(ST_POINT(#{lat}, #{lng})::geography, #{radius}) area ON ST_WITHIN(ST_POINT(events.latitude, events.longitude)::geography::geometry, area::geometry)")
+    end
     if genders_only.to_i != -1
       data_query =
           data_query
@@ -83,11 +88,11 @@ class Event < ApplicationRecord
     # history events option
     if display_option.to_i == 1
       data_query = data_query
-                       .order('dist ASC, start_time DESC')
+                       .order('start_time DESC')
                        .where('start_time::timestamp < ?::timestamp', Time.now.getutc)
     else # incomming events option
       data_query = data_query
-                       .order('dist ASC')
+                       .order('start_time ASC')
                        .where('start_time::timestamp > ?::timestamp', Time.now.getutc)
 
     end

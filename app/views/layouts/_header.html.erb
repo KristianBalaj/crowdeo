@@ -2,11 +2,6 @@
 
   <%= link_to "Crowdeo", root_path, class: "navbar-brand" %>
 
-  <%= form_tag(events_search_path, method: "get", class: "form-inline my-2 my-lg-0") do %>
-      <%= search_field :search, :query, class: "form-control mr-sm-2", placeholder: "Search category (e.g sport)" %>
-      <%= submit_tag "Search", class: "btn btn-outline-primary my-2 my-sm-0" %>
-  <% end %>
-
   <div class="navbar-collapse collapse">
     <ul class="navbar-nav ml-auto">
       <li class="nav-item">

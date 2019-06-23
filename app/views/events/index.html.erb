@@ -1,4 +1,4 @@
-<section class="jumbotron jumbotron-fluid">
+<section class="jumbotron jumbotron-fluid" style="padding-top: 1.5rem; padding-bottom: 1rem;">
   <div class="container">
     <%= form_tag '', id: 'submitFilters' do %>
 
@@ -31,39 +31,29 @@
 </section>
 
 <div class="container">
-  <div class="row justify-content-end bg-light" style="padding-bottom: 10px; margin: 0px">
+  <div class="row bg-light" style="padding-bottom: 10px; margin: 0px">
+    <div class="col-9 text-left">
+      <a class="btn btn-secondary" data-toggle="collapse" href="#mapCollapse" role="button" aria-expanded="false" aria-controls="collapseExample">
+        Toggle map
+      </a>
+    </div>
+
     <div class="col-3 text-right">
       <select class="form-control" id="display-by">
         <option value="0">Upcoming</option>
         <option value="1">History</option>
       </select>
     </div>
-<!--      <div class="dropdown show">-->
-<!--        <a class="btn btn-secondary dropdown-toggle" href="" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
-<!--          Sort by-->
-<!--        </a>-->
-<!--        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">-->
-<!--          <a id="distance-sort" class="dropdown-item">Distance</a>-->
-<!--          <a id="time-sort" class="dropdown-item">Time</a>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    <div class="col-4 text-right">-->
-<!--      <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
-<!--        Dropdown link-->
-<!--      </a>-->
-<!--      <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">-->
-<!--        <a class="dropdown-item" href="#">Action</a>-->
-<!--        <a class="dropdown-item" href="#">Another action</a>-->
-<!--        <a class="dropdown-item" href="#">Something else here</a>-->
-<!--      </div>-->
-<!--    </div>-->
   </div>
-  <div id="locationDisabled">
-    <div class="row justify-content-center">
+
+  <div class="collapse" id="mapCollapse">
+    <div class="card bg-light">
+      <div id="mapid"></div>
     </div>
   </div>
+
   <div class="album py=5 bg-light">
-    <div id="closestEvents" class="row">
+    <div id="closestEvents" class="row" style="padding: 1.5rem">
     </div>
   </div>
   <div class="row justify-content-center">
@@ -71,10 +61,63 @@
       Load more
     </a>
   </div>
+
 </div>
 
 <script>
+  const defaultCircleRadius = 7500;
+
+  var mymap = null;
+  var circle = null;
   var eventsLoadedCount = 0;
+
+  function getRadius()
+  {
+      if(mymap !== null)
+      {
+          bounds = mymap.getBounds();
+          return mymap.distance(bounds.getNorthWest(), bounds.getSouthWest()) / 3;
+      }
+      else
+      {
+          return defaultCircleRadius;
+      }
+  }
+
+  $('#mapCollapse').on('shown.bs.collapse', function()
+  {
+      if(mymap === null)
+      {
+          var onMapZoomed = function()
+          {
+              circle.setRadius(getRadius());
+              removeAllEvents();
+              loadEvents(getFilterParams());
+          };
+
+          var onMapClicked = function(e)
+          {
+              circle.setLatLng([e.latlng.lat, e.latlng.lng]);
+              removeAllEvents();
+              loadEvents(getFilterParams());
+          };
+
+          var onLocationGet = function (lat, lng) {
+              mymap = addMap('mapid', [lat, lng], 10);
+              mymap.setMinZoom(5);
+              circle = L.circle([lat, lng], {
+                  color: '#ff8031',
+                  fillColor: '#ff8f51',
+                  fillOpacity: 0.1,
+                  radius: defaultCircleRadius
+              }).addTo(mymap);
+              mymap.on('click', onMapClicked);
+              mymap.on('zoomend', onMapZoomed);
+          };
+
+          getLocation(onLocationGet, function(){});
+      }
+  });
 
   function getFilterParams()
   {
@@ -183,23 +226,38 @@
 
   function getCloseEvents(extra_parameters, onEventsReceived, onFail)
   {
-      getLocation(function(lat, lng) {
-              document.getElementById('locationDisabled').style.display = 'none';
-              request = new XMLHttpRequest();
+      var onLocationGet = function(lat, lng, radius)
+      {
+          request = new XMLHttpRequest();
 
-              request.onload = function () {
-                  var eventsResult = JSON.parse(request.response);
-                  onEventsReceived(eventsResult);
-              };
-              url = '<%= request.base_url + url_for(closest_events_path '1000', '1001', '1002') %>';
-              url = url.replace('/1000', '/' + lat);
-              url = url.replace('/1001', '/' + lng);
-              url = url.replace('/1002', '/' + eventsLoadedCount);
-              url = url + extra_parameters;
-              request.open('GET', url);
-              request.send();
+          request.onload = function () {
+              var eventsResult = JSON.parse(request.response);
+              onEventsReceived(eventsResult);
+          };
+          url = '<%= request.base_url + url_for(closest_events_path '1000', '1001', '1002', '1003') %>';
+          url = url.replace('/1000', '/' + lat);
+          url = url.replace('/1001', '/' + lng);
+          url = url.replace('/1002', '/' + eventsLoadedCount);
+          url = url.replace('/1003', '/' + radius);
+          url = url + extra_parameters;
+          request.open('GET', url);
+          request.send();
+      };
+
+      const radius = getRadius();
+
+      if(mymap === null && circle === null)
+      {
+          getLocation(function(lat, lng)
+          {
+              onLocationGet(lat, lng, radius);
           },
           onFail);
+      }
+      else
+      {
+          onLocationGet(circle.getLatLng().lat, circle.getLatLng().lng, radius);
+      }
   }
 
   $('document').ready(function ()

@@ -20,13 +20,14 @@ Rails.application.routes.draw do
   get '/events/show/:id', to: 'events#show', as: 'event_show'
   get '/events/:id/edit', to: 'events#edit', as: 'edit_event'
   get '/newevent', to: 'events#new'
-  get '/events/search', to: 'events#search'
-  get '/events/closest/:lat/:lng/:offset/(:other)', to: 'events#closest_events', as: 'closest_events', constraints: { lat: float_regex, lng: float_regex, offset: float_regex}
+  get '/events/closest/:lat/:lng/:offset/:radius/(:other)', to: 'events#closest_events', as: 'closest_events',
+      constraints: { lat: float_regex, lng: float_regex, offset: float_regex, radius: float_regex}
   patch '/events/:id', to: 'events#update', as: 'update_event'
   delete '/events/:id', to: 'events#delete', as: 'delete_event'
   post '/newevent', to: 'events#create'
-  put '/events/attend/:id', to: 'events#attend_event', as: 'event_attend'
-  put '/events/unattend/:id', to: 'events#unattend_event', as: 'event_unattend'
+
+  post '/attend/:id', to: 'attendances#attend_event', as: 'attend_event'
+  post '/unattend/:id', to: 'attendances#unattend_event', as: 'unattend_event'
 
   resources :users
   # resources :events
