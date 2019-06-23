@@ -43,6 +43,8 @@ get_categories_names.each_with_index do |category_name, id|
   end
 end
 
+$redis.set('test', 'redis on')
+
 # Gender.create([{ id: 0, gender_tag: "male" }, { id: 1, gender_tag: "female" }])
 
 # puts 'Creating users'

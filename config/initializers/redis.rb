@@ -1,0 +1,1 @@
+$redis = Redis::Namespace.new(url: ENV["REDIS_URL"])
