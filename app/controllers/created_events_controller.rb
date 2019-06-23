@@ -1,4 +1,5 @@
 include EventsHelper
+include ApplicationHelper
 
 class CreatedEventsController < ApplicationController
   def index

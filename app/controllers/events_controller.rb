@@ -1,4 +1,5 @@
 include EventsHelper
+include ApplicationHelper
 
 class EventsController < ApplicationController
 

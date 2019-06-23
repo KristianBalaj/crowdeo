@@ -1,3 +1,6 @@
+include EventsHelper
+include ApplicationHelper
+
 class AttendingEventsController < ApplicationController
 
   def index
