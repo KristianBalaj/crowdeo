@@ -3,12 +3,10 @@ class Event < ApplicationRecord
   has_many :events_gender_filters
 
   validates :name, presence: true
-  validates :start_date, presence: true
-  validates :end_date, presence: true
-  validates :start_time, presence: true
-  validates :end_time, presence: true
   validates :latitude, presence: true
   validates :category_id, presence: true
+  validates :start_time, presence: true
+  validates :end_time, presence: true
 
   # @return [Boolean] true when deletion completed successfully otherwise false
   def self.delete_event(event_to_delete)
@@ -47,10 +45,9 @@ class Event < ApplicationRecord
     return event
   end
 
-  def self.query_event_data(current_user_id, only_attending_events, only_author_events, offset, lat, lng, category_id, only_night, only_free, genders_only)
+  def self.query_event_data(display_option, current_user_id, only_attending_events, only_author_events, offset, lat, lng, category_id, only_night, only_free, genders_only)
     data_query = Event
                .joins('JOIN users ON events.author_id = users.id')
-               .order('dist ASC')
                .offset(offset)
                .limit(6)
                .select('events.id',
@@ -60,7 +57,6 @@ class Event < ApplicationRecord
                  'events.tags',
                  'events.capacity',
                  'events.description',
-                 'events.start_date',
                  'events.start_time',
                  'users.nick_name as author_nick',
                  'events.author_id',
@@ -82,6 +78,18 @@ class Event < ApplicationRecord
                        .where('event_attendances.user_id = ?', current_user_id)
     elsif only_author_events
       data_query = data_query.where('events.author_id = ?', current_user_id)
+    end
+
+    # history events option
+    if display_option.to_i == 1
+      data_query = data_query
+                       .order('dist ASC, start_time DESC')
+                       .where('start_time::timestamp < ?::timestamp', Time.now.getutc)
+    else # incomming events option
+      data_query = data_query
+                       .order('dist ASC')
+                       .where('start_time::timestamp > ?::timestamp', Time.now.getutc)
+
     end
     return data_query
   end

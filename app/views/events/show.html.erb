@@ -10,15 +10,15 @@
     </div>
   </div>
   <p>Organizer: <%= @author_nick %></p>
-  <p>Start: <%= get_full_dateTime @event.start_date, @event.start_time %></p>
-  <p>End: <%= get_full_dateTime @event.end_date, @event.end_time %></p>
+  <p>Start: <%= @event.start_time %></p>
+  <p>End: <%= @event.start_time %></p>
   <p>Full description: <%= @event.description %></p>
   <p><%= @event.tags %></p>
 
   <div id="mapid"></div>
 
   <% if @is_my_event %>
-    <%= link_to "Delete event", delete_event_path(@event), method: :delete, class: "btn btn-primary btn-lg btn-block" %>
+    <%= link_to "Delete event", delete_event_path(@event), method: :delete, class: "btn btn-primary btn-lg btn-block", style: 'margin-top: 30px' %>
   <% end %>
 
 </div>

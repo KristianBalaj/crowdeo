@@ -8,8 +8,6 @@ class EventsController < ApplicationController
       go_to_login
       return
     end
-    @categories_arr = Category.all.map {|c| [c.name, c.id]}
-    @categories_arr = @categories_arr.unshift ['All', -1]
     @genders_arr = Gender.all.map {|g| [g.gender_tag.capitalize, g.id]}
     @genders_arr = @genders_arr.unshift ['All', -1]
   end
@@ -34,6 +32,7 @@ class EventsController < ApplicationController
       go_to_login
       return
     end
+    @dates = OpenStruct.new
     @event = Event.new
     @categories_arr = Category.all.map {|c| [c.name, c.id]}
   end
@@ -46,7 +45,9 @@ class EventsController < ApplicationController
 
     event_hash_without_geo = permitted_event_params
     event_hash_without_geo[:author_id] = current_user.id
-
+    if event_hash_without_geo[:category_id] == '-1'
+      event_hash_without_geo[:category_id] = ''
+    end
     lat = params[:event][:lat]
     lng = params[:event][:lng]
 
@@ -61,6 +62,7 @@ class EventsController < ApplicationController
       flash[:success] = "Event created successfully."
       redirect_to event_show_path @event
     else
+      @dates = OpenStruct.new(params[:dates])
       render 'new'
     end
   end
@@ -154,7 +156,9 @@ class EventsController < ApplicationController
   end
 
   def closest_events
+    puts request
     result = Event.query_event_data(
+        params[:display_by],
         current_user.id,
         false,
         false,
@@ -167,9 +171,7 @@ class EventsController < ApplicationController
         params[:genders_only]).as_json
     result.each do |item|
       author_id = item.delete "author_id"
-      start_date = item.delete "start_date"
-      start_time = item.delete "start_time"
-      item[:time_to_event_text] = get_created_ago_text(get_full_dateTime start_date, start_time)
+      item[:time_to_event_text] = get_starts_in_text(item['start_time'])
       item[:is_popular] = if rand < 0.5 then true else false end
       item[:is_author_event] = current_user.id == author_id
       item['is_attending'] = item['is_attending'] == 1
@@ -184,16 +186,15 @@ class EventsController < ApplicationController
     params.require(:event).permit(
         :name,
         :description,
-        :start_date,
-        :end_date,
         :capacity,
         :is_filter,
         :from_birth_date,
-        :start_time,
-        :end_time,
         :is_free,
         :is_night,
-        :tags)
+        :tags,
+        :category_id,
+        :start_time,
+        :end_time)
   end
 
   def go_to_login
