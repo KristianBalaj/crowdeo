@@ -45,6 +45,12 @@ class Event < ApplicationRecord
     return event
   end
 
+  def self.get_all_from_area(lat, lng, radius)
+    return Event
+        .select('events.id', '(SELECT count(*) FROM event_attendances WHERE events.id = event_attendances.event_id) as attendance')
+        .joins("JOIN ST_BUFFER(ST_POINT(#{lat}, #{lng})::geography, #{radius}) area ON ST_WITHIN(ST_POINT(events.latitude, events.longitude)::geography::geometry, area::geometry)")
+  end
+
   def self.query_event_data(
               display_option,
               current_user_id,

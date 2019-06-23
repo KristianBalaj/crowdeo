@@ -16,7 +16,8 @@ function addEventCardsToNode(eventsData, cardsParentNode, eventShowHrefBase, eve
             item.is_author_event,
             item.capacity === '' ? null : item.capacity,
             item.tags,
-            item.is_popular).appendTo(cardsParentNode);
+            item.is_popular,
+            item.views_count).appendTo(cardsParentNode);
     });
 }
 
@@ -61,7 +62,8 @@ function getEventCardNode(
     is_user_organizer,
     capacity,
     tags,
-    is_popular)
+    is_popular,
+    views_count)
 {
     var attendancePerc = capacity == null ? null : Math.floor((attendance_count / capacity) * 100);
     var header = $('<div>', {'class': 'card-header text-center font-weight-bold'});
@@ -74,7 +76,7 @@ function getEventCardNode(
     else if(is_popular)
     {
         card_border_class = 'border-secondary';
-        header = header.text('Popular');
+        header = header.text('Popular near you');
     }
     else
     {
@@ -109,6 +111,9 @@ function getEventCardNode(
                     $('<div>', {'class': 'btn-group'}).append(
                         $('<a>', {'class': 'btn btn-sm btn-outline-primary', 'href': show_event_href}).text('View'),
                         $('<a>', {'display': (is_user_organizer ? 'block' : 'none'), 'class': 'btn btn-sm btn-outline-primary', 'href': edit_event_href}).text('Edit')
+                    ),
+                    $('<div>', {'class': 'text-muted'}).append(
+                        $('<small>').text('Views: ' + views_count)
                     )
                 )
             ),
