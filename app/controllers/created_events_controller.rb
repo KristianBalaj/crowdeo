@@ -10,19 +10,13 @@ class CreatedEventsController < ApplicationController
   end
 
   def created_events
-    result = Event.query_event_data(
+    result = Event.get_events_data_json(
+        false,
         0,
         current_user.id,
         false,
         true,
-        params[:offset]).as_json
-    result.each do |item|
-      author_id = item.delete "author_id"
-      item[:time_to_event_text] = get_starts_in_text(item['start_time'])
-      item[:is_popular] = if rand < 0.5 then true else false end
-      item[:is_author_event] = current_user.id == author_id
-      item['is_attending'] = item['is_attending'] == 1
-    end
+        params[:offset])
 
     render :json => result.to_json
   end

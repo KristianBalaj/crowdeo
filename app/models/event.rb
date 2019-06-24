@@ -2,11 +2,19 @@ class Event < ApplicationRecord
   has_many :event_attendances
   has_many :events_gender_filters
 
-  validates :name, presence: true
+  validates :name, presence: true, uniqueness: true
   validates :latitude, presence: true
   validates :category_id, presence: true
   validates :start_time, presence: true
   validates :end_time, presence: true
+
+  def self.add_view(id)
+    $redis.incr("events:#{id}")
+  end
+
+  def self.get_views_count(id)
+    $redis.get("events:#{id}").to_i
+  end
 
   # @return [Boolean] true when deletion completed successfully otherwise false
   def self.delete_event(event_to_delete)
@@ -43,6 +51,70 @@ class Event < ApplicationRecord
       event.save
     end
     return event
+  end
+
+  def self.get_events_data_json(tag_popular,
+                           display_option,
+                           current_user_id,
+                           only_attending_events,
+                           only_author_events,
+                           offset,
+                           lat = 0,
+                           lng = 0,
+                           radius = -1,
+                           category_id = -1,
+                           only_night = 'false',
+                           only_free = 'false',
+                           genders_only = -1)
+    result = self.query_event_data(
+        display_option,
+        current_user_id,
+        only_attending_events,
+        only_author_events,
+        offset,
+        lat,
+        lng,
+        radius,
+        category_id,
+        only_night,
+        only_free,
+        genders_only).as_json
+
+    sorted_area_events_by_score = []
+    total_area_events_count = 0
+
+    if tag_popular
+      all_area_events = self.get_all_from_area(lat, lng, radius).as_json
+      total_area_events_count = all_area_events.count
+      all_area_events.each do |item|
+        views_count = self.get_views_count(item['id'])
+        item['attendance'] += views_count
+        item['views'] = views_count
+      end
+      sorted_area_events_by_score = all_area_events.sort_by do |item|
+        item['attendance']
+      end
+    end
+
+    result.each do |item|
+      author_id = item.delete "author_id"
+      item[:time_to_event_text] = get_time_to_event_start_text(item['start_time'])
+      item[:is_author_event] = current_user_id == author_id
+      item['is_attending'] = item['is_attending'] == 1
+
+      if tag_popular
+        event_rank = sorted_area_events_by_score.index do |x| x['id'].to_i == item['id'].to_i end
+        puts 'RANK ' + event_rank.to_s
+        puts '> ' + (total_area_events_count * 0.8 - 1).ceil.to_s
+        item[:is_popular] = event_rank != nil ? event_rank > (total_area_events_count * 0.8 - 1).ceil : false
+        item[:views_count] = event_rank != nil ? sorted_area_events_by_score[event_rank]['views'] : 0
+      else
+        item[:is_popular] = false
+        item[:views_count] = self.get_views_count(item['id'])
+      end
+    end
+
+    return result.as_json
   end
 
   def self.get_all_from_area(lat, lng, radius)

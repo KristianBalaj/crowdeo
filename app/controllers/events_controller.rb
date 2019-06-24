@@ -59,7 +59,7 @@ class EventsController < ApplicationController
     @author_nick = User.find_by(id: @event.author_id).nick_name
     @is_my_event = @event.author_id == current_user.id
 
-    $redis.incr("events:#{params[:id]}")
+    Event.add_view @event.id
   end
 
   def edit
@@ -107,7 +107,8 @@ class EventsController < ApplicationController
   end
 
   def closest_events
-    result = Event.query_event_data(
+    result = Event.get_events_data_json(
+        true,
         params[:display_by],
         current_user.id,
         false,
@@ -119,34 +120,7 @@ class EventsController < ApplicationController
         params[:category],
         params[:only_night],
         params[:only_free],
-        params[:genders_only]).as_json
-
-    all_area_events = Event.get_all_from_area(params[:lat],
-                            params[:lng],
-                            params[:radius]).as_json
-    total_area_events_count = all_area_events.count
-
-    all_area_events.each do |item|
-      views_count = $redis.get("events:#{item['id']}").to_i
-      puts views_count
-      item['attendance'] += views_count
-      item['views'] = views_count
-    end
-
-    sorted_area_events_by_score = all_area_events.sort_by do |item|
-      item['attendance']
-    end
-
-    result.each do |item|
-      author_id = item.delete "author_id"
-      item[:time_to_event_text] = get_starts_in_text(item['start_time'])
-      item[:is_popular] = if rand < 0.5 then true else false end
-      item[:is_author_event] = current_user.id == author_id
-      item['is_attending'] = item['is_attending'] == 1
-      event_rank = sorted_area_events_by_score.index do |x| x['id'].to_i == item['id'].to_i end
-      item[:is_popular] = event_rank != nil ? event_rank > (total_area_events_count * 0.8 - 1).ceil : false
-      item[:views_count] = event_rank != nil ? sorted_area_events_by_score[event_rank]['views'] : 0
-    end
+        params[:genders_only])
 
     render :json => result.to_json
   end
