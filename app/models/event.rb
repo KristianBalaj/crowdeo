@@ -30,6 +30,11 @@ class Event < ApplicationRecord
     return true
   end
 
+  def self.get_event_attendance(event_id)
+    Event.where("events.id = #{event_id}")
+        .select('(SELECT count(*) FROM event_attendances WHERE events.id = event_attendances.event_id) as attendance').first.attendance
+  end
+
   def self.create_event_with_filters(event_hash, lat_lng_arr, is_filter, permit_gender_id_arr)
     event = nil
     ActiveRecord::Base.transaction do
