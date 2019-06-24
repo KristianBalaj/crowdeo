@@ -71,6 +71,7 @@ class EventsController < ApplicationController
     @event = Event.find_by(id: params[:id])
 
     if current_user.id != @event.author_id
+      flash[:danger] = 'Cannot modify event you don\'t own.'
       redirect_to all_events_path
     end
   end

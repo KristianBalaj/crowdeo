@@ -110,7 +110,7 @@ function getEventCardNode(
                 $('<div>', {'class': 'd-flex justify-content-between align-items-center'}).append(
                     $('<div>', {'class': 'btn-group'}).append(
                         $('<a>', {'class': 'btn btn-sm btn-outline-primary', 'href': show_event_href}).text('View'),
-                        $('<a>', {'display': (is_user_organizer ? 'block' : 'none'), 'class': 'btn btn-sm btn-outline-primary', 'href': edit_event_href}).text('Edit')
+                        is_user_organizer ? $('<a>', {'class': 'btn btn-sm btn-outline-primary', 'href': edit_event_href}).text('Edit') : null
                     ),
                     $('<div>', {'class': 'text-muted'}).append(
                         $('<small>').text('Views: ' + views_count)

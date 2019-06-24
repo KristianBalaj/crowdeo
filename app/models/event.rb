@@ -99,7 +99,7 @@ class Event < ApplicationRecord
     result.each do |item|
       author_id = item.delete "author_id"
       item[:time_to_event_text] = get_time_to_event_start_text(item['start_time'])
-      item[:is_author_event] = current_user_id == author_id
+      item[:is_author_event] = current_user_id.to_i == author_id.to_i
       item['is_attending'] = item['is_attending'] == 1
 
       if tag_popular
