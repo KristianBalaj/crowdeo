@@ -10,12 +10,9 @@ class AttendancesController < ApplicationController
     #
     event = Event.find_by(id: params[:id])
 
-    if event.capacity != nil
-      attendance = Event.get_event_attendance(event.id)
-      if attendance >= event.capacity
-        flash[:danger] = "Cannot attend this event, capacity is full."
-        redirect_to event_show_path(event)
-      end
+    if event.capacity != nil and Event.get_event_attendance(event.id)
+      flash[:danger] = "Cannot attend this event, capacity is full."
+      redirect_to event_show_path(event)
     elsif EventAttendance.create(user_id: current_user.id, event_id: event.id)
       flash[:success] = "Event attend confirmed."
       redirect_to event_show_path(event)

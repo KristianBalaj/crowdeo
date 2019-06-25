@@ -1,0 +1,18 @@
+version: "3"
+
+services:
+
+    redis:
+        image: redis:latest
+        container_name: redis-crowdeo
+        ports: ["6379:6379"]
+    
+    db:
+        image: kartoza/postgis:latest
+        container_name: postgres-crowdeo
+        ports: ["5432:5432"]
+        environment:
+            - POSTGRES_DB=gis
+            - POSTGRES_USER=docker
+            - POSTGRES_PASS=docker
+            - ALLOW_IP_RANGE=0.0.0.0/0

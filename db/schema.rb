@@ -14,7 +14,6 @@ ActiveRecord::Schema.define(version: 2019_06_23_084301) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-  enable_extension "postgis"
 
   create_table "categories", force: :cascade do |t|
     t.string "name"
@@ -37,11 +36,11 @@ ActiveRecord::Schema.define(version: 2019_06_23_084301) do
     t.integer "capacity"
     t.boolean "is_filter"
     t.date "from_birth_date"
+    t.float "longitude"
+    t.float "latitude"
     t.integer "author_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.float "latitude"
-    t.float "longitude"
     t.text "tags"
     t.boolean "is_free"
     t.boolean "is_night"
